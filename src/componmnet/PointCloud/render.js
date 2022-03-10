@@ -20,6 +20,18 @@ const main = async (canvas, data) => {
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x111f0f);
+    const color = 0xffffff;
+    const intensity = 2;
+
+    const ambientLight = new THREE.AmbientLight(color, intensity);
+
+    const light = new THREE.PointLight(color, intensity);
+
+    light.position.z = -10;
+    light.position.x = 10;
+    light.position.y = 10;
+    scene.add(light);
+    scene.add(ambientLight);
     const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
     camera.position.z = 5;
 

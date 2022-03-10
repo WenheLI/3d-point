@@ -35,7 +35,7 @@ const prepareMaterial = (data) => {
     const materialPool = {};
     const groups = new Set(data.nodes.map((it) => it.group));
     groups.forEach((it) => {
-        materialPool[it] = new THREE.MeshBasicMaterial({
+        materialPool[it] = new THREE.MeshPhongMaterial({
             color: randomColorHex(),
         });
     })
