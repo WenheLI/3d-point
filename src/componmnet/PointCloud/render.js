@@ -1,18 +1,30 @@
 import * as THREE from "three";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DragControls } from 'three/examples/jsm/controls/DragControls';
-import { Graph } from 'igraph-wasm';
 import { prepareMaterial } from '../../utils';
 
-const main = async (canvas, data) => {
+const updateLayout = (spheres, graph) => {
+    
+    for (const id in spheres) {
+        const sphere = spheres[id];
+        const rawPos = graph.queryPoint(id, 3);
+        sphere.position.x = rawPos[0] * 10
+        sphere.position.y = rawPos[1] * 10
+        sphere.position.z = rawPos[2] * 10
+        for (const [line, sphere_] of sphere.userData.lineAsSource) {
+            line.geometry.setFromPoints([sphere_.position, sphere.position]);
+        }
+        for (const [line, sphere_] of sphere.userData.lineAsTarget) {
+            line.geometry.setFromPoints([sphere.position, sphere_.position]);
+        }
+    }
+}
+
+const main = (canvas, data, graph) => {
     let edges = data.links.map((it) => {
         return [it.source, it.target];
     }).flat();
 
-    const G = new Graph();
-    await G.init();
-    
-    const graph = G.createInstance();
 
     graph.feed(edges, data.nodes.length);
     graph.kamadaKawai3DLayout(200, .9, 12);
@@ -95,9 +107,10 @@ const main = async (canvas, data) => {
 
     animate();
 
-    return [spherePool, graph];
+    return spherePool;
 }
 
 export {
-    main
+    main,
+    updateLayout
 }

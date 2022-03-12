@@ -39,9 +39,11 @@ const prepareMaterial = (data) => {
             color: randomColorHex(),
         });
     })
-
+    
     return materialPool;
 }
+
+// MeshPhongMaterial
 
 export {
     preprocess,
