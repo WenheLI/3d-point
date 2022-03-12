@@ -1,48 +1,48 @@
-import React, { Component, useEffect, useRef } from 'react';
-import { main } from './render';
+import React, { Component, useEffect, useRef, useState } from 'react';
+import { main, updateLayout } from './render';
 import oriData from '../../../data/data.json';
 import { preprocess } from '../../utils';
+import { Graph } from 'igraph-wasm';
 
-const updateLayout = (spheres, graph) => {
-    for (const id in spheres) {
-        const sphere = spheres[id];
-        const pos = graph.queryPoint(id, 3);
-        sphere.position.x = pos[0] * 10;
-        sphere.position.y = pos[1] * 10;
-        sphere.position.z = pos[2] * 10;
-        for (const [line, sphere_] of sphere.userData.lineAsSource) {
-            line.geometry.setFromPoints([sphere_.position, sphere.position]);
-        }
-        for (const [line, sphere_] of sphere.userData.lineAsTarget) {
-            line.geometry.setFromPoints([sphere.position, sphere_.position]);
-        }
-    }
-}
 
 function PointCloud({ layout }) {
+    const [graph, setGraph] = useState(null);
+
+    useEffect(async () => {
+        const g = new Graph();
+        await g.init();
+        const graph = g.createInstance();
+        setGraph(graph);
+    }, []);
+
     const canvasRef = useRef(null);
     const shperes = useRef(null);
-    const graph = useRef(null);
-    console.log(layout)
     useEffect(async () => {
-        if (canvasRef.current !== null) {
+        if (canvasRef.current !== null && graph) {
             let data = preprocess(oriData);
-            const [spheres, graph_] = await main(canvasRef.current, data);
+            const spheres = main(canvasRef.current, data, graph);
             shperes.current = spheres;
-            graph.current = graph_;
         }
-    }, [canvasRef]);
+    }, [canvasRef, graph]);
 
     useEffect(() => {
-        if (shperes.current !== null) {
+        if (shperes.current !== null && graph) {
             if (layout === 0) {
-                graph.current.kamadaKawai3DLayout(200, .5, 12);
+                graph.kamadaKawai3DLayout(200, .5, 12);
             } else if (layout === 1) {
-                graph.current.sphereLayout();
+                graph.sphereLayout();
+            } else if (layout === 2) {
+                graph.random3DLayout();
+            } else if (layout === 3) {
+                graph.gridLayout();
+            } else if (layout === 4) {
+                graph.fruchtermanReingold3DLayout();
+            } else if (layout === 5) {
+                graph.drl3DLayout();
             }
-            updateLayout(shperes.current, graph.current);
+            updateLayout(shperes.current, graph);
         }
-    }, [layout]);
+    }, [layout, graph]);
     
     return (
         <div ref={canvasRef} style={{
