@@ -16,11 +16,6 @@ function App() {
             <PointCloud  layout={layout} />
         </div>
     )
-
-    // random3DLayout
-    // gridLayout
-    // fruchtermanReingold3DLayout
-    // drl3DLayout
 }
 
 export default App;
