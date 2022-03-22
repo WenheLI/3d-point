@@ -32,7 +32,6 @@ const main = (canvas, data, ratio) => {
         spherePool[i] = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
             color: randomColorHex(),
         }));
-        console.log(data[i])
         spherePool[i].position.x = data[i].umap1;
         spherePool[i].position.y = data[i].umap2;
         spherePool[i].position.z = data[i].umap3;
