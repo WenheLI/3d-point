@@ -5,6 +5,7 @@ import PointCloud from './componmnet/PointCloud/PointCloud';
 
 function App() {
     const [layout, setLayout] = React.useState(0);
+    const [node, setNode] = React.useState(null);
     return (
         <div>
             {/* <div>
@@ -16,8 +17,8 @@ function App() {
                 <button onClick={() => setLayout(5)}> Drl </button>
             </div>
             <Network  layout={layout} /> */}
-            <HeatMap />
-            <PointCloud />
+            <HeatMap setNode={setNode}/>
+            <PointCloud node={node}/>
         </div>
     )
 }

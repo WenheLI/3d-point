@@ -2,6 +2,15 @@ import * as THREE from "three";
 import { randomColorHex } from "../../utils";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+const updateCamera = (camera, posValues) => {
+    if (camera && posValues) {
+        camera.position.set(posValues[1],posValues[2],posValues[3]);
+        camera.lookAt(new THREE.Vector3(0, 0, 0))
+        // camera.lookAt(new THREE.Vector3(posValues[1], posValues[2], posValues[3]))
+        console.log("camera changed");
+    }
+}
+
 const main = (canvas, data, ratio) => {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x111f0f);
@@ -17,6 +26,7 @@ const main = (canvas, data, ratio) => {
     light.position.y = 10;
     scene.add(light);
     scene.add(ambientLight);
+
     const camera = new THREE.PerspectiveCamera( 75, window.innerWidth * ratio / (window.innerHeight * ratio), 0.1, 1000 );
     camera.position.z = 5;
 
@@ -49,8 +59,11 @@ const main = (canvas, data, ratio) => {
     };
 
     animate();
+
+    return camera;
 }
 
 export {
-    main
+    main,
+    updateCamera
 }
