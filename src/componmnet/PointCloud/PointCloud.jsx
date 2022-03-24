@@ -1,13 +1,13 @@
 import React, { Component, useEffect, useRef, useState } from 'react';
 import { main, updateCamera } from './render';
 import oriData from '../../../data/pca_3dumap_outputs_with_metadata.json';
-import { validate } from '../../lib/clustergrammer-gl.node';
 
 
 function PointCloud({ node }) {
-
+    console.log(node)
     const canvasRef = useRef(null);
     const camera = useRef(null);
+    const controls = useRef(null);
 
     String.prototype.replaceAt = function(index, replacement) {
         return this.substring(0, index) + replacement + this.substring(index + replacement.length);
@@ -21,8 +21,10 @@ function PointCloud({ node }) {
 
     useEffect(() => {
         if (canvasRef.current !== null) {
-            const cam = main(canvasRef.current, oriData, .45);
-            camera.current = cam;
+            const {camera: localCam, controls: localControl} = main(canvasRef.current, oriData, .45);
+            camera.current = localCam;
+            controls.current = localControl;
+            console.log(camera, controls)
         }
     }, [canvasRef]);
 
@@ -35,9 +37,9 @@ function PointCloud({ node }) {
                 newNode = newNode.replaceAt(len - 6, '.');
             }
             const values = Object.values(getNodeByCode(newNode)[0])
-            updateCamera(camera.current, values);
+            updateCamera(camera.current, controls.current, values);
             // console.log(values[3]);
-        }  
+        }
     }, [node])
 
     return (

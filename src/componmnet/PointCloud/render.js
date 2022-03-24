@@ -2,12 +2,17 @@ import * as THREE from "three";
 import { randomColorHex } from "../../utils";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-const updateCamera = (camera, posValues) => {
+const updateCamera = (camera, controls, posValues) => {
+    console.log(camera, controls, posValues)
     if (camera && posValues) {
-        camera.position.set(posValues[1],posValues[2],posValues[3]);
-        camera.lookAt(new THREE.Vector3(0, 0, 0))
+        camera.position.set(posValues[1], posValues[2], posValues[3] - 1.5);
+        const nodePos = new THREE.Vector3(posValues[1], posValues[2], posValues[3]);
+        camera.lookAt(nodePos);
+        console.log("update")
+        controls.target = nodePos;
+        controls.update();
         // camera.lookAt(new THREE.Vector3(posValues[1], posValues[2], posValues[3]))
-        console.log("camera changed");
+        // console.log("camera changed");
     }
 }
 
@@ -48,19 +53,18 @@ const main = (canvas, data, ratio) => {
         scene.add(spherePool[i]);
     }
 
-    const controls = new OrbitControls( camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
 
     renderer.render(scene, camera);
 
     function animate() {
         requestAnimationFrame(animate);
-
         renderer.render(scene, camera);
     };
 
     animate();
 
-    return camera;
+    return {camera, controls};
 }
 
 export {
