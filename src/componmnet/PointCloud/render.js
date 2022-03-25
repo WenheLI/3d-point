@@ -3,16 +3,12 @@ import { randomColorHex } from "../../utils";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const updateCamera = (camera, controls, posValues) => {
-    console.log(camera, controls, posValues)
     if (camera && posValues) {
-        camera.position.set(posValues[1], posValues[2], posValues[3] - 1.5);
-        const nodePos = new THREE.Vector3(posValues[1], posValues[2], posValues[3]);
+        camera.position.set(posValues.umap1, posValues.umap2, posValues.umap3 - 1.5);
+        const nodePos = new THREE.Vector3(posValues.umap1, posValues.umap2, posValues.umap3);
         camera.lookAt(nodePos);
-        console.log("update")
         controls.target = nodePos;
         controls.update();
-        // camera.lookAt(new THREE.Vector3(posValues[1], posValues[2], posValues[3]))
-        // console.log("camera changed");
     }
 }
 

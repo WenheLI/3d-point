@@ -4,19 +4,21 @@ import oriData from '../../../data/pca_3dumap_outputs_with_metadata.json';
 
 
 function PointCloud({ node }) {
-    console.log(node)
     const canvasRef = useRef(null);
     const camera = useRef(null);
     const controls = useRef(null);
+    const nodePool = getNodePool();
 
-    String.prototype.replaceAt = function(index, replacement) {
-        return this.substring(0, index) + replacement + this.substring(index + replacement.length);
-    }
 
-    function getNodeByCode(id) {
-        return oriData.filter(
-            function(oriData){ return oriData.id == id }
-        );
+    function getNodePool() {
+        const nodePool = {};
+        oriData.forEach(element => {
+            nodePool[element.id] = {
+                "umap1": element.umap1, 
+                "umap2": element.umap2, 
+                "umap3": element.umap3}
+        });
+        return nodePool;
     }
 
     useEffect(() => {
@@ -24,21 +26,12 @@ function PointCloud({ node }) {
             const {camera: localCam, controls: localControl} = main(canvasRef.current, oriData, .45);
             camera.current = localCam;
             controls.current = localControl;
-            console.log(camera, controls)
         }
     }, [canvasRef]);
 
     useEffect(() => {
-        // if (node.substring(node.size() - 5, node.size()))
         if (node !== null) {
-            const len = node.length
-            let newNode = node
-            if (newNode.substring(len - 4, len) === ".fcs") {
-                newNode = newNode.replaceAt(len - 6, '.');
-            }
-            const values = Object.values(getNodeByCode(newNode)[0])
-            updateCamera(camera.current, controls.current, values);
-            // console.log(values[3]);
+            updateCamera(camera.current, controls.current, nodePool[node]);
         }
     }, [node])
 
