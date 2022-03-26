@@ -1,53 +1,34 @@
 import React, { Component, useEffect, useRef, useState } from 'react';
-import { main, updateLayout } from './render';
-import oriData from '../../../data/data.json';
-import { preprocess } from '../../utils';
-import { Graph } from 'igraph-wasm';
+import { main, updateCamera } from './render';
+import oriData from '../../../data/pca_3dumap_outputs_with_metadata.json';
 
 
-function PointCloud({ layout }) {
-    const [graph, setGraph] = useState(null);
-
-    useEffect(async () => {
-        const g = new Graph();
-        await g.init();
-        const graph = g.createInstance();
-        setGraph(graph);
-    }, []);
-
+function PointCloud({ node }) {
     const canvasRef = useRef(null);
-    const shperes = useRef(null);
-    useEffect(async () => {
-        if (canvasRef.current !== null && graph) {
-            let data = preprocess(oriData);
-            const spheres = main(canvasRef.current, data, graph);
-            shperes.current = spheres;
-        }
-    }, [canvasRef, graph]);
+    const camera = useRef(null);
+    const controls = useRef(null);
+    const nodePool = useRef(null);
 
     useEffect(() => {
-        if (shperes.current !== null && graph) {
-            if (layout === 0) {
-                graph.kamadaKawai3DLayout(200, .5, 12);
-            } else if (layout === 1) {
-                graph.sphereLayout();
-            } else if (layout === 2) {
-                graph.random3DLayout();
-            } else if (layout === 3) {
-                graph.gridLayout();
-            } else if (layout === 4) {
-                graph.fruchtermanReingold3DLayout();
-            } else if (layout === 5) {
-                graph.drl3DLayout();
-            }
-            updateLayout(shperes.current, graph);
+        if (canvasRef.current !== null) {
+            const {camera: localCam, controls: localControl, nodePool: localNodePool} = main(canvasRef.current, oriData, .45);
+            camera.current = localCam;
+            controls.current = localControl;
+            nodePool.current = localNodePool;
         }
-    }, [layout, graph]);
-    
+    }, [canvasRef]);
+
+    useEffect(() => {
+        if (node !== null && camera.current && controls.current && nodePool.current[node]) {
+            updateCamera(camera.current, controls.current, nodePool.current[node]);
+        }
+    }, [node])
+
     return (
         <div ref={canvasRef} style={{
-            width: '100%',
-            height: '100%',
+            width: '45%',
+            height: '45%',
+            left: '50%',
             position: 'absolute',
         }}></div>
     )

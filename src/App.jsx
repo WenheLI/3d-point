@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
+import Network from './componmnet/Network/Network';
+import HeatMap from './componmnet/HeatMap/index';
 import PointCloud from './componmnet/PointCloud/PointCloud';
 
 function App() {
     const [layout, setLayout] = React.useState(0);
+    const [node, setNode] = React.useState(null);
     return (
         <div>
-            <div>
+            {/* <div>
                 <button onClick={() => setLayout(0)}> KK </button>
                 <button onClick={() => setLayout(1)}> Sphere </button>
                 <button onClick={() => setLayout(2)}> Random </button>
@@ -13,7 +16,9 @@ function App() {
                 <button onClick={() => setLayout(4)}> FR </button>
                 <button onClick={() => setLayout(5)}> Drl </button>
             </div>
-            <PointCloud  layout={layout} />
+            <Network  layout={layout} /> */}
+            <HeatMap setNode={setNode}/>
+            <PointCloud node={node}/>
         </div>
     )
 }
