@@ -17,7 +17,7 @@ function Network({ layout }) {
 
     const canvasRef = useRef(null);
     const shperes = useRef(null);
-    useEffect(async () => {
+    useEffect(() => {
         if (canvasRef.current !== null && graph) {
             let data = preprocess(oriData);
             const spheres = main(canvasRef.current, data, graph);

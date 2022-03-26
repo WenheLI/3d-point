@@ -2,14 +2,15 @@ import * as THREE from "three";
 import { randomColorHex } from "../../utils";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-const updateCamera = (camera, controls, posValues) => {
-    if (camera && posValues) {
-        camera.position.set(posValues.umap1, posValues.umap2, posValues.umap3 - 1.5);
-        const nodePos = new THREE.Vector3(posValues.umap1, posValues.umap2, posValues.umap3);
-        camera.lookAt(nodePos);
-        controls.target = nodePos;
-        controls.update();
-    }
+const updateCamera = (camera, controls, nodeMesh) => {
+    x = nodeMesh.position.x;
+    y = nodeMesh.position.y;
+    z = nodeMesh.position.z;
+    camera.position.set(x, y, z - 1.5);
+    const nodePos = new THREE.Vector3(x, y, z);
+    camera.lookAt(nodePos);
+    controls.target = nodePos;
+    controls.update();
 }
 
 const main = (canvas, data, ratio) => {
@@ -37,16 +38,16 @@ const main = (canvas, data, ratio) => {
 
     const geometry = new THREE.SphereGeometry(.05);
 
-    const spherePool = {};
+    const nodePool = {};
 
     for (let i = 0; i < data.length; i++) {
-        spherePool[i] = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
+        nodePool[data[i].id] = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
             color: randomColorHex(),
         }));
-        spherePool[i].position.x = data[i].umap1;
-        spherePool[i].position.y = data[i].umap2;
-        spherePool[i].position.z = data[i].umap3;
-        scene.add(spherePool[i]);
+        nodePool[data[i].id].position.x = data[i].umap1;
+        nodePool[data[i].id].position.y = data[i].umap2;
+        nodePool[data[i].id].position.z = data[i].umap3;
+        scene.add(nodePool[data[i].id]);
     }
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -60,7 +61,7 @@ const main = (canvas, data, ratio) => {
 
     animate();
 
-    return {camera, controls};
+    return {camera, controls, nodePool};
 }
 
 export {

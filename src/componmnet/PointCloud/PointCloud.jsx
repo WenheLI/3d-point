@@ -7,31 +7,20 @@ function PointCloud({ node }) {
     const canvasRef = useRef(null);
     const camera = useRef(null);
     const controls = useRef(null);
-    const nodePool = getNodePool();
-
-
-    function getNodePool() {
-        const nodePool = {};
-        oriData.forEach(element => {
-            nodePool[element.id] = {
-                "umap1": element.umap1, 
-                "umap2": element.umap2, 
-                "umap3": element.umap3}
-        });
-        return nodePool;
-    }
+    const nodePool = useRef(null);
 
     useEffect(() => {
         if (canvasRef.current !== null) {
-            const {camera: localCam, controls: localControl} = main(canvasRef.current, oriData, .45);
+            const {camera: localCam, controls: localControl, nodePool: localNodePool} = main(canvasRef.current, oriData, .45);
             camera.current = localCam;
             controls.current = localControl;
+            nodePool.current = localNodePool;
         }
     }, [canvasRef]);
 
     useEffect(() => {
-        if (node !== null) {
-            updateCamera(camera.current, controls.current, nodePool[node]);
+        if (node !== null && camera.current && controls.current && nodePool.current[node]) {
+            updateCamera(camera.current, controls.current, nodePool.current[node]);
         }
     }, [node])
 
