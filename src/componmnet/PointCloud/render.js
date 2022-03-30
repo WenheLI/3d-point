@@ -6,9 +6,8 @@ import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import SelectionHelper from './SelectionHelper';
 
 const updateCamera = (camera, controls, nodeMesh) => {
-    x = nodeMesh.position.x;
-    y = nodeMesh.position.y;
-    z = nodeMesh.position.z;
+    const {x, y, z} = nodeMesh.position;
+   
     camera.position.set(x, y, z - 1.5);
     const nodePos = new THREE.Vector3(x, y, z);
     camera.lookAt(nodePos);
