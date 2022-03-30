@@ -69977,7 +69977,6 @@ module.exports = function build_control_panel(hide){
   params.tooltip_fun = tooltip;
 
   // var control_container = d3.select(params.root + ' .control-container')[0][0];
-  if (hide){
   var control_container = d3.select(params.root + ' .control-container')
                             ._groups[0][0];
   var i_height = 135;
@@ -70533,7 +70532,7 @@ module.exports = function build_control_panel(hide){
         return 'translate( '+ x_offset +', '+ y_trans +')'
       })
 
-    }
+
 };
 
 
@@ -70575,7 +70574,7 @@ module.exports = function build_recluster_section(cgm){
   var active_run_color = '#00FF75';
   let active_button_color = '#008000'
 
-  control_svg = d3.select(params.root + ' .control-container svg')
+  let control_svg = d3.select(params.root + ' .control-container svg')
 
   control_svg
     .append('g')
@@ -70632,7 +70631,7 @@ module.exports = function build_recluster_section(cgm){
     .attr('cursor', 'default')
 
 
-  run_cluster_container = d3.select(params.root + ' .control_svg')
+  let run_cluster_container = d3.select(params.root + ' .control_svg')
     .append('g')
     .classed('run_cluster_container', true)
     .attr('transform', 'translate('+ 350  +', '+ 91 +')')
@@ -70795,7 +70794,7 @@ module.exports = function build_recluster_section(cgm){
   link_dict['complete'] = 'cmplt'
 
 
-  link_options_container = d3.select(params.root + ' .control_svg')
+  let link_options_container = d3.select(params.root + ' .control_svg')
     .append('g')
     .classed('link_option_container', true)
     .selectAll('g')
@@ -70967,7 +70966,7 @@ module.exports = function alt_slice_linkage(params, axis, dist_thresh, min_dist=
 
   // console.log(axis, 'alternate slice linkage!!!!!!!!!!')
 
-  network = params.network
+  let network = params.network
   let clust_a
   let clust_b
 
@@ -70982,7 +70981,7 @@ module.exports = function alt_slice_linkage(params, axis, dist_thresh, min_dist=
   })
 
   // the max individual cluster id
-  max_clust_id = params.network[axis + '_nodes'].length
+  let max_clust_id = params.network[axis + '_nodes'].length
 
   params.network.linkage[axis].forEach((x, i) => {
 
@@ -70992,7 +70991,7 @@ module.exports = function alt_slice_linkage(params, axis, dist_thresh, min_dist=
       clust_a = x[0]
       clust_b = x[1]
 
-      new_clust_id = max_clust_id + i
+      let new_clust_id = max_clust_id + i
 
       // make new array, concat lower level cluster, delete lower level clusters
       group_dict[new_clust_id] = []
@@ -72129,7 +72128,7 @@ module.exports = function make_matrix_string(params){
   ////////////////////////
 
   params.norm.zscore_status
-
+  let inst_mat_data;
   if (params.norm.zscore_status === 'non-zscored' && 'mat_data_iz' in params){
     inst_mat_data = params.mat_data_iz
   } else {
@@ -72713,7 +72712,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
-_ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var reset_cameras = __webpack_require__(/*! ./../cameras/reset_cameras */ "./src/cameras/reset_cameras.js");
 var start_animation = __webpack_require__(/*! ./start_animation */ "./src/draws/start_animation.js");
 var end_animation = __webpack_require__(/*! ./end_animation */ "./src/draws/end_animation.js");
@@ -74196,7 +74195,7 @@ module.exports = function make_opacity_arr(params){
   let inst_avg
   let inst_std
 
-  mat_data = params.mat_data
+  let mat_data = params.mat_data
 
   // run one or the other
   // calc_zscore(params)
@@ -76260,7 +76259,7 @@ module.exports = function initialize_params(external_model){
   }
 
   let axes = ['col', 'row']
-  manual_category = {}
+  let manual_category = {}
 
   if ('manual_category' in params.network){
 
@@ -78135,7 +78134,7 @@ module.exports = function calc_inverse_zscore(params){
 
   console.log('calc_inverse_zscore!!!!!!!!!!!!!!')
 
-  mat_data = params.mat_data
+  let mat_data = params.mat_data
 
   // Inv-Z-score data
   //////////////////////////////////////////////
@@ -78174,7 +78173,7 @@ module.exports = function calc_zscore(params){
 
   console.log('calc_zscore ????????????  ')
 
-  mat_data = params.mat_data
+  let mat_data = params.mat_data
 
   // Z-score data
   //////////////////////////////////////////////
