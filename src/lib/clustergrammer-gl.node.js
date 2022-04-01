@@ -1927,7 +1927,8 @@ function toByteArray (b64) {
     ? validLen - 4
     : validLen
 
-  for (var i = 0; i < len; i += 4) {
+  var i
+  for (i = 0; i < len; i += 4) {
     tmp =
       (revLookup[b64.charCodeAt(i)] << 18) |
       (revLookup[b64.charCodeAt(i + 1)] << 12) |
@@ -1986,9 +1987,7 @@ function fromByteArray (uint8) {
 
   // go through the array every three bytes, we'll deal with trailing stuff later
   for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(
-      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
-    ))
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
   }
 
   // pad the end with zeros, but make sure to not forget the extra bytes
@@ -7892,7 +7891,7 @@ red_loop:
 /* WEBPACK VAR INJECTION */(function(global) {/*!
  * The buffer module from node.js, for the browser.
  *
- * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @author   Feross Aboukhadijeh <http://feross.org>
  * @license  MIT
  */
 /* eslint-disable no-proto */
@@ -44979,6 +44978,7 @@ function transformQuat (out, a, q) {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -67056,6 +67056,7 @@ module.exports = function build_reorder_cat_titles(regl, cgm){
 
 /* eslint-disable guard-for-in */
 
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var binom_test = __webpack_require__(/*! ./binom_test */ "./src/cats/binom_test.js");
 
 module.exports = function calc_cat_cluster_breakdown(params, inst_data, inst_rc){
@@ -67507,6 +67508,7 @@ module.exports = function cat_breakdown_values(params, cat_graph_group, cat_bar_
 /***/ (function(module, exports, __webpack_require__) {
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 module.exports = function check_if_value_cats(cat_states){
 
   var tmp_cat = cat_states[0];
@@ -67585,8 +67587,10 @@ module.exports = function check_if_value_cats(cat_states){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 module.exports = function generate_cat_array(params, inst_axis){
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
   var title_sep = ': ';
   current_cats = {};
 
@@ -67646,8 +67650,9 @@ module.exports = function generate_cat_array(params, inst_axis){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 module.exports = function generate_cat_info(params){
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
   var viz = {}
   var super_string = ': ';
@@ -68143,6 +68148,8 @@ module.exports = function make_cat_args(regl, params, inst_axis, cat_index){
 /***/ (function(module, exports, __webpack_require__) {
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 module.exports = function make_cat_breakdown_graph(params, dendro_info, cb){
 
   if (cb.length > 0){
@@ -68523,6 +68530,7 @@ module.exports = {
 /* eslint-disable */
 
 var distances = __webpack_require__(/*! ./distance */ "./src/clusterfck_local/distance.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 var HierarchicalClustering = function(distance, linkage, threshold) {
 
@@ -69941,15 +69949,15 @@ module.exports = function color_to_rgbs(hex_or_name, alpha=1.0){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 let draw_webgl_layers = __webpack_require__(/*! ./../draws/draw_webgl_layers */ "./src/draws/draw_webgl_layers.js")
 // var logo_url = require("file-loader!../graham_cracker_70.png");
 let build_opacity_slider = __webpack_require__(/*! ./../colors/build_opacity_slider */ "./src/colors/build_opacity_slider.js")
 let download_matrix = __webpack_require__(/*! ./../download/download_matrix */ "./src/download/download_matrix.js")
 let download_metadata = __webpack_require__(/*! ./../download/download_metadata */ "./src/download/download_metadata.js")
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
-module.exports = function build_control_panel(){
+module.exports = function build_control_panel(hide){
 
   var cgm = this;
   var regl = cgm.regl;
@@ -71046,8 +71054,8 @@ module.exports = function alt_slice_linkage(params, axis, dist_thresh, min_dist=
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 var build_single_dendro_slider = __webpack_require__(/*! ./build_single_dendro_slider */ "./src/dendrogram/build_single_dendro_slider.js");
 
 module.exports = function build_dendrogram_sliders(){
@@ -71396,7 +71404,8 @@ module.exports = function build_single_dendro_slider(cgm, axis){
   \*************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function calc_dendro_triangles(params, inst_axis){
 
@@ -71674,7 +71683,8 @@ module.exports = function make_dendro_args(regl, params, inst_axis){
   \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function make_dendro_arr(params, inst_axis){
 
@@ -72118,7 +72128,7 @@ module.exports = function make_matrix_string(params){
   ////////////////////////
 
   params.norm.zscore_status
-
+  let inst_mat_data;
   if (params.norm.zscore_status === 'non-zscored' && 'mat_data_iz' in params){
     inst_mat_data = params.mat_data_iz
   } else {
@@ -72240,7 +72250,8 @@ module.exports = function make_meta_string(params){
   \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function draw_axis_components(regl, params, inst_axis, calc_text_tri=false){
 
@@ -72317,10 +72328,10 @@ module.exports = function draw_axis_components(regl, params, inst_axis, calc_tex
   \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 var vectorize_label = __webpack_require__(/*! ./../matrix_labels/vectorize_label */ "./src/matrix_labels/vectorize_label.js");
 var drop_label_from_queue = __webpack_require__(/*! ./../matrix_labels/drop_label_from_queue */ "./src/matrix_labels/drop_label_from_queue.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function draw_background_calculations(regl, params){
 
@@ -72589,6 +72600,8 @@ module.exports = function draw_webgl_layers(cgm){
 /***/ (function(module, exports, __webpack_require__) {
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 module.exports = function end_animation(cgm){
 
 
@@ -72904,7 +72917,7 @@ module.exports = function initialize_containers(){
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = function viz_from_network(external_model){
+module.exports = function viz_from_network(external_model, args){
 
   this.initialize_containers();
   this.initialize_regl();
@@ -72912,7 +72925,7 @@ module.exports = function viz_from_network(external_model){
   // console.log('viz_from_network')
   // define parameters and run visualization
   this.initialize_params(external_model);
-  this.build_control_panel();
+  this.build_control_panel(args.hide_panels);
   this.build_dendrogram_sliders();
   this.ini_canvas_mouseover();
   this.run_viz(external_model);
@@ -73007,6 +73020,8 @@ module.exports = function final_mouseover_frame(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 module.exports = function find_mouseover_element(regl, params, ev){
 
   /*
@@ -73015,7 +73030,7 @@ module.exports = function find_mouseover_element(regl, params, ev){
     used to reorder on double click.
 
   */
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
   var viz_dim_heat = params.viz_dim.heat;
   var mouseover = params.int.mouseover;
 
@@ -73926,7 +73941,7 @@ function clustergrammer_gl(args, external_model=null){
 
     // going to work on passing in filtered network in place of full network
     // as a quick crop method
-    cgm.viz_from_network(external_model);
+    cgm.viz_from_network(external_model, cgm.args);
 
     // copy the cgm object to the external widget model
     if (external_model != null){
@@ -74162,11 +74177,11 @@ module.exports = function make_matrix_args(){
   \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var calc_inverse_zscore = __webpack_require__(/*! ./../utils/calc_inverse_zscore */ "./src/utils/calc_inverse_zscore.js")
 var calc_zscore = __webpack_require__(/*! ./../utils/calc_zscore */ "./src/utils/calc_zscore.js")
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function make_opacity_arr(params){
 
@@ -74275,7 +74290,8 @@ module.exports = function make_position_arr(params, inst_row_order, inst_col_ord
   \************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function calc_text_offsets(params, inst_axis){
 
@@ -74359,9 +74375,9 @@ module.exports = function drop_label_from_queue(inst_queue, inst_axis, inst_name
   \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 var vectorize_label = __webpack_require__(/*! ./vectorize_label */ "./src/matrix_labels/vectorize_label.js")
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function gather_text_triangles(params, inst_axis){
 
@@ -74439,9 +74455,10 @@ module.exports = function gather_text_triangles(params, inst_axis){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 module.exports = function gen_ordered_labels(cgm){
   // Generate lists of ordered label and category names for mouseover
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
   let params = cgm.params
 
@@ -74669,7 +74686,8 @@ module.exports = function make_col_text_args(regl, params, zoom_function){
   \***********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function make_label_queue(params){
 
@@ -75123,7 +75141,9 @@ module.exports = function make_viz_aid_tri_pos_arr(params, inst_axis, inst_order
   !*** ./src/matrix_labels/update_text_triangle_order.js ***!
   \*********************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function update_text_triangle_order(params, inst_axis){
 
@@ -75225,8 +75245,9 @@ module.exports = function vectorize_label(params, inst_axis, inst_name){
 /***/ (function(module, exports, __webpack_require__) {
 
 var utils = __webpack_require__(/*! ./../utils/utils_clust */ "./src/utils/utils_clust.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 module.exports = function calc_alpha_order(params){
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
   var network = params.network
 
@@ -75280,7 +75301,8 @@ module.exports = function calc_alpha_order(params){
   \************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function calc_mat_arr(params){
 
@@ -75384,7 +75406,8 @@ module.exports = function calc_row_and_col_canvas_positions(params){
   \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function calc_viz_area(params){
 
@@ -75464,7 +75487,7 @@ module.exports = function calc_viz_area(params){
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var extend = __webpack_require__(/*! xtend/mutable */ "./node_modules/xtend/mutable.js");
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function calc_vd(regl, params){
 
@@ -75634,7 +75657,7 @@ module.exports = function gen_cat_par(params){
 var calc_dendro_triangles = __webpack_require__(/*! ./../dendrogram/calc_dendro_triangles */ "./src/dendrogram/calc_dendro_triangles.js")
 var make_dendro_args = __webpack_require__(/*! ./../dendrogram/make_dendro_args */ "./src/dendrogram/make_dendro_args.js")
 var alt_slice_linkage = __webpack_require__(/*! ./../dendrogram/alt_slice_linkage */ "./src/dendrogram/alt_slice_linkage.js")
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function gen_dendro_par(cgm){
 
@@ -75715,8 +75738,9 @@ module.exports = function gen_dendro_par(cgm){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 module.exports = function gen_int_par(params){
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
   var interact = {};
   interact.total = 0;
@@ -75749,8 +75773,9 @@ module.exports = function gen_int_par(params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 module.exports = function gen_label_par(cgm){
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
   let params = cgm.params;
 
@@ -75827,7 +75852,8 @@ module.exports = function gen_pix_to_webgl(params){
   \*****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function gen_text_zoom_par(params){
 
@@ -75860,7 +75886,7 @@ module.exports = function gen_text_zoom_par(params){
 
 var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
 var make_cat_args = __webpack_require__(/*! ./../cats/make_cat_args */ "./src/cats/make_cat_args.js");
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 /* eslint-disable no-loop-func */
 
@@ -75907,8 +75933,9 @@ module.exports = function generate_cat_args_arrs(regl, params){
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 module.exports = function generate_order_params(params){
-  var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
   params.order = {};
   _.each(['inst', 'new'], function(inst_state){
@@ -75935,9 +75962,10 @@ module.exports = function generate_order_params(params){
   \*************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 var make_spillover_args = __webpack_require__(/*! ./../spillover/make_spillover_args */ "./src/spillover/make_spillover_args.js");
 var calc_spillover_triangles = __webpack_require__(/*! ./../spillover/calc_spillover_triangles */ "./src/spillover/calc_spillover_triangles.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function generate_spillover_params(regl, params){
 
@@ -75978,9 +76006,10 @@ module.exports = function generate_spillover_params(regl, params){
   \*****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 var gather_text_triangles = __webpack_require__(/*! ./../matrix_labels/gather_text_triangles */ "./src/matrix_labels/gather_text_triangles.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 module.exports = function generate_text_triangle_params(params){
 
   // save text triangles for later use
@@ -76076,7 +76105,7 @@ var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var hzome_functions = __webpack_require__(/*! ./../tooltip/hzome_functions */ "./src/tooltip/hzome_functions.js")
 var make_matrix_args = __webpack_require__(/*! ./../matrix_cells/make_matrix_args */ "./src/matrix_cells/make_matrix_args.js")
 var color_to_rgba = __webpack_require__(/*! ./../colors/color_to_rgba */ "./src/colors/color_to_rgba.js");
-var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+const _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function initialize_params(external_model){
 
@@ -76471,7 +76500,7 @@ module.exports = function get_max_tree_distance(dm){
 /***/ (function(module, exports, __webpack_require__) {
 
 var get_max_distance_in_dm = __webpack_require__(/*! ./get_max_distance_in_dm */ "./src/recluster/get_max_distance_in_dm.js");
-var underscore = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function get_order_and_groups_clusterfck_tree(clusters, names,
                                                                cgm, axis){
@@ -76527,7 +76556,7 @@ module.exports = function get_order_and_groups_clusterfck_tree(clusters, names,
   console.log(axis)
   console.log(cutoff_vals)
 
-  underscore.each(['left','right'], function(side){
+  _.each(['left','right'], function(side){
 
     get_leaves(tree[side], side, ini_level, tree_height, threshold_status);
 
@@ -76536,7 +76565,7 @@ module.exports = function get_order_and_groups_clusterfck_tree(clusters, names,
   function get_leaves(limb, side, inst_level, inst_dist, threshold_status){
 
     // lock if distance is under resolvable distance
-    underscore.each(cutoff_indexes, function(index){
+    _.each(cutoff_indexes, function(index){
       if (inst_dist <= cutoff_vals[index]){
 
         // increment group if going from above to below threshold
@@ -76555,12 +76584,12 @@ module.exports = function get_order_and_groups_clusterfck_tree(clusters, names,
     });
 
     // if there are more branches then there is a distance
-    if ( underscore.has(limb, 'dist')){
+    if ( _.has(limb, 'dist')){
 
       inst_dist = limb.dist;
       inst_level = inst_level + 1;
 
-      underscore.each(['left', 'right'], function(side2){
+      _.each(['left', 'right'], function(side2){
         get_leaves(limb[side2], side2, inst_level, inst_dist,  threshold_status);
       });
 
@@ -76569,7 +76598,7 @@ module.exports = function get_order_and_groups_clusterfck_tree(clusters, names,
       inst_key = limb.key;
 
       // increment group if leaf is above threshold
-      underscore.each(cutoff_indexes, function(index){
+      _.each(cutoff_indexes, function(index){
 
         if (threshold_status[index] === 'above'){
           group[index] = group[index] + 1;
@@ -76608,7 +76637,7 @@ module.exports = function get_order_and_groups_clusterfck_tree(clusters, names,
   // generate ordered names
   var inst_name;
   var ordered_names = [];
-  underscore.each(order_list, function(index){
+  _.each(order_list, function(index){
     inst_name = names[index];
     ordered_names.push(inst_name);
   });
@@ -76639,6 +76668,7 @@ var dist_fun = __webpack_require__(/*! ./distance_functions */ "./src/recluster/
 var get_order_and_groups_clusterfck_tree = __webpack_require__(/*! ./get_order_and_groups_clusterfck_tree */ "./src/recluster/get_order_and_groups_clusterfck_tree.js");
 // var update_view = require('../update/update_view');
 // var underscore = require('underscore');
+var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 var change_groups = __webpack_require__(/*! ./../dendrogram/change_groups */ "./src/dendrogram/change_groups.js");
 
@@ -76747,6 +76777,7 @@ module.exports = function recluster(distance_metric='cosine', linkage_type='aver
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var run_reorder = __webpack_require__(/*! ./../reorders/run_reorder */ "./src/reorders/run_reorder.js");
+var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function custom_label_reorder(regl, params, inst_axis){
 
@@ -76815,6 +76846,7 @@ module.exports = function custom_label_reorder(regl, params, inst_axis){
 /***/ (function(module, exports, __webpack_require__) {
 
 var make_cat_position_array = __webpack_require__(/*! ./../cats/make_cat_position_array */ "./src/cats/make_cat_position_array.js");
+var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function reorder_cat_args(regl, params){
 
@@ -77344,6 +77376,8 @@ module.exports = function display_and_position_tooltip(params){
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
+
 module.exports = function hzome_functions(params){
 
   function get_request(ini_gene_symbol){
@@ -77665,6 +77699,7 @@ module.exports = function make_dendro_tooltip(cgm, external_model, inst_axis){
 
 var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var make_dendro_tooltip = __webpack_require__(/*! ./make_dendro_tooltip */ "./src/tooltip/make_dendro_tooltip.js");
+var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function make_tooltip_text(cgm, external_model){
 
@@ -78099,7 +78134,7 @@ module.exports = function calc_inverse_zscore(params){
 
   console.log('calc_inverse_zscore!!!!!!!!!!!!!!')
 
-  mat_data = params.mat_data
+  let mat_data = params.mat_data
 
   // Inv-Z-score data
   //////////////////////////////////////////////
@@ -78138,7 +78173,7 @@ module.exports = function calc_zscore(params){
 
   console.log('calc_zscore ????????????  ')
 
-  mat_data = params.mat_data
+  let mat_data = params.mat_data
 
   // Z-score data
   //////////////////////////////////////////////
@@ -78391,6 +78426,7 @@ module.exports = function calc_potential_total_pan(zoom_data){
   \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
+
 var _ = __webpack_require__(/*! underscore */ "./node_modules/underscore/underscore.js");
 
 module.exports = function ini_zoom_data(){
@@ -78779,9 +78815,8 @@ module.exports = function zoom_rules_high_mat(regl, params, external_model){
 
     } else {
 
-      console.log('single-click')
       cgm.single_clicking(params, external_model);
-      cgm.args.onclick(params.int.mouseover.row.name, params.int.mouseover.col.name)
+      cgm.args.onclick(params.int.mouseover.row.name, params.int.mouseover.col.name);
     }
 
   });
