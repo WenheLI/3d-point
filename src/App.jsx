@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import Network from './componmnet/Network/Network';
 import HeatMap from './componmnet/HeatMap/index';
 import PointCloud from './componmnet/PointCloud/PointCloud';
@@ -6,6 +6,9 @@ import PointCloud from './componmnet/PointCloud/PointCloud';
 function App() {
     const [layout, setLayout] = React.useState(0);
     const [node, setNode] = React.useState(null);
+
+    const [selectNodes, setSelectionNodes] = useState([]);
+
     return (
         <div>
             {/* <div>
@@ -17,8 +20,8 @@ function App() {
                 <button onClick={() => setLayout(5)}> Drl </button>
             </div>
             <Network  layout={layout} /> */}
-            <HeatMap setNode={setNode}/>
-            <PointCloud node={node}/>
+            <HeatMap setNode={setNode} selectedNode={selectNodes}/>
+            <PointCloud node={node} setNode={setSelectionNodes}/>
         </div>
     )
 }

@@ -2,8 +2,9 @@ import React, { Component, useEffect, useRef, useState } from 'react';
 import cgl from '../../lib/clustergrammer-gl.node';
 import data from '../../../data/cytof.json';
 
-function HeatMap({setNode}) {
+function HeatMap({setNode, selectedNode}) {
     const containerRef = useRef(null);
+    const cg = useRef(null);
 
     useEffect(() => {
         if (containerRef.current !== null) {
@@ -18,10 +19,19 @@ function HeatMap({setNode}) {
                     setNode(col);
                 }
             }
-            const cg = new cgl(args);
+            cg.current = new cgl(args);
+            window.c = cg.current
+
         }
           
-    }, [containerRef])
+    }, [containerRef]);
+
+    useEffect(() => {
+        console.log(selectedNode)
+        if (cg.current !== null && selectedNode !== null) {
+            cg.current.utils.highlight(selectedNode);
+        }
+    }, [selectedNode]);
     
     return (
         <div id='HeatMap-Container' ref={containerRef}>
