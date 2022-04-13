@@ -113,7 +113,7 @@ const main = (canvas, data, ratio) => {
 
             for ( let i = 0; i < allSelected.length; i ++ ) {
 
-                allSelected[ i ].material.emissive.set( 0xffffff );
+                allSelected[i].material.emissive.set( 0xffffff );
 
             }
 
