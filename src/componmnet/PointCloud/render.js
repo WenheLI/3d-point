@@ -59,14 +59,12 @@ const main = (canvas, data, ratio, backgroundColor) => {
     // raycasting for showing text
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector3();
+    let boundingRect = renderer.domElement.getBoundingClientRect();
     let mouseX = null;
     let mouseY = null;
-    let lastLabel = "";
+    let lastLabel = '';
 
     function onMouseMove(event) {
-        let elem = renderer.domElement;
-        let boundingRect = elem.getBoundingClientRect();
-
         let x = (event.clientX - boundingRect.left);
         let y = (event.clientY - boundingRect.top);
         mouse.x = (x / boundingRect.width) * 2 - 1;
@@ -80,34 +78,31 @@ const main = (canvas, data, ratio, backgroundColor) => {
     }
     canvas.addEventListener('mousemove', onMouseMove);
 
-    function render() {
+    function renderLabel() {
         const intersects = raycaster.intersectObjects( scene.children );
-
+        let hovEvent;
+        let curLabel;
 
         if (intersects.length > 0) {
-            const curLabel = intersects[0].object.userData['label'];
+            curLabel = intersects[0].object.userData['label'];
             if (curLabel !== lastLabel) {
-                let hovIn = new CustomEvent('clientHovIn', {
+                hovEvent = new CustomEvent('clientHovIn', {
                     detail: {x: mouseX, y: mouseY, label: curLabel}
                 }); 
-                document.dispatchEvent(hovIn);
-                lastLabel = curLabel;
             }
         } else {
-            const curLabel = "";
+            curLabel = '';
             if (curLabel !== lastLabel) {
-                const hovOut = new CustomEvent('clientHovOut', {});
-                document.dispatchEvent(hovOut);
-                lastLabel = curLabel;
+                hovEvent = new CustomEvent('clientHovOut', {});
             }
-
         }
-        
+        document.dispatchEvent(hovEvent);
+        lastLabel = curLabel; 
     }
 
     function animate() {
         requestAnimationFrame(animate);
-        render();
+        renderLabel();
         renderer.render(scene, camera);
     };
 

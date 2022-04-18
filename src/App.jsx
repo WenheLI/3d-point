@@ -27,12 +27,12 @@ function App() {
                 <Network  layout={layout} /> */}
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <h1>Heat Map</h1>
-                    <HeatMap setNode={setNode} heatMapStyle={heatMapStyle}/>
+                    <HeatMap setNode={setNode} style={heatMapStyle}/>
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <h1>3D Visualization</h1>
-                    <PointCloud node={node} cloudStyle={cloudStyle}/>
+                    <PointCloud node={node} style={cloudStyle}/>
                 </div>
             </div>
         </div>

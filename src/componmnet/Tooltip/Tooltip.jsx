@@ -26,7 +26,11 @@ function Tooltip() {
                      left: tip.x,
                      top: tip.y,
                      zIndex: 1000}}>
-            <p style={{color: "white", margin: 0, padding: 0, wordWrap: "break-word"}}>{tip.label}</p>
+            <p style={{color: "white", 
+                       margin: 0, 
+                       padding: 0, 
+                       maxWidth: "250px",
+                       wordWrap: "break-word"}}>{tip.label}</p>
         </div>
     )
 }
