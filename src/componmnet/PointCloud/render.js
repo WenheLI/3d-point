@@ -15,10 +15,10 @@ const updateCamera = (camera, controls, nodeMesh) => {
     controls.update();
 }
 
-const main = (canvas, data, ratio) => {
+const main = (canvas, data, ratio, backgroundColor) => {
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x111f0f);
-    const color = 0xffffff;
+    scene.background = new THREE.Color(backgroundColor);
+    const color = 0xdbdbdb;
     const intensity = 2;
 
     const ambientLight = new THREE.AmbientLight(color, intensity);
@@ -49,13 +49,59 @@ const main = (canvas, data, ratio) => {
         nodePool[data[i].id].position.x = data[i].umap1;
         nodePool[data[i].id].position.y = data[i].umap2;
         nodePool[data[i].id].position.z = data[i].umap3;
+        nodePool[data[i].id].userData = {
+            'label': data[i].id,
+        }
         scene.add(nodePool[data[i].id]);
     }
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
-
     renderer.render(scene, camera);
+
+    // raycasting for showing text
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector3();
+    let boundingRect = renderer.domElement.getBoundingClientRect();
+    let mouseX = null;
+    let mouseY = null;
+    let lastLabel = '';
+
+    function onMouseMove(event) {
+        let x = (event.clientX - boundingRect.left);
+        let y = (event.clientY - boundingRect.top);
+        mouse.x = (x / boundingRect.width) * 2 - 1;
+        mouse.y = - (y / boundingRect.height) * 2 + 1;
+        mouse.z = 0.5;
+        raycaster.setFromCamera(mouse, camera);
+
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+
+    }
+    canvas.addEventListener('mousemove', onMouseMove);
+
+    function renderLabel() {
+        const intersects = raycaster.intersectObjects( scene.children );
+        let hovEvent;
+        let curLabel;
+
+        if (intersects.length > 0) {
+            curLabel = intersects[0].object.userData['label'];
+            if (curLabel !== lastLabel) {
+                hovEvent = new CustomEvent('clientHovIn', {
+                    detail: {x: mouseX, y: mouseY, label: curLabel}
+                }); 
+            }
+        } else {
+            curLabel = '';
+            if (curLabel !== lastLabel) {
+                hovEvent = new CustomEvent('clientHovOut', {});
+            }
+        }
+        document.dispatchEvent(hovEvent);
+        lastLabel = curLabel; 
+    }
 
     // setup selection box
 
@@ -140,9 +186,9 @@ const main = (canvas, data, ratio) => {
 
     } );
 
-
     function animate() {
         requestAnimationFrame(animate);
+        renderLabel();
         renderer.render(scene, camera);
     };
 
