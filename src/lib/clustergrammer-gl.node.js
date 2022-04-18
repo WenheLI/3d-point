@@ -69980,8 +69980,7 @@ module.exports = function build_control_panel(hide){
   var control_container = d3.select(params.root + ' .control-container')
                             ._groups[0][0];
   var i_height = 135;
-  //var i_width = params.viz_width;
-  var i_width = this.args.viz_width;
+  var i_width = params.viz_width;
 
   var control_panel_color = 'white';
   var text_color = '#47515b';
@@ -69994,7 +69993,6 @@ module.exports = function build_control_panel(hide){
     .classed('control_svg', true)
     .attr('height',i_height + 'px')
     .attr('width',i_width+'px')
-    .attr('viewBox','10 10 900 130')
     .on('mouseover', function(){
       params.tooltip.in_bounds_tooltip = false;
     })
@@ -71076,24 +71074,23 @@ module.exports = function build_dendrogram_sliders(){
   var inst_top;
   var inst_left;
   var inst_rotate;
-  console.log(this.args);
 
   // hardwiring dendro slider position
   _.each(['row', 'col'], function(inst_axis){
 
     if (inst_axis === 'row'){
       inst_top = 175;
-      inst_left = this.argsviz_width + 25;
+      inst_left = params.viz_width - 25 ;
     } else {
       inst_top = 795;
-      inst_left = 5;
+      inst_left = 55;
     }
 
     axis_slider_container = d3.select(params.root + ' .canvas-container')
       .append('svg')
       .style('height', slider_length + 'px')
       .style('width', '20px')
-      .style('position', 'relative')
+      .style('position', 'absolute')
       .style('top', inst_top + 'px')
       .style('left', inst_left + 'px')
       .attr('class', inst_axis + '_dendro_slider_svg')
