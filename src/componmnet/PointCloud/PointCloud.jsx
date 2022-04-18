@@ -1,6 +1,7 @@
 import React, { Component, useEffect, useRef, useState } from 'react';
 import { main, updateCamera } from './render';
 import oriData from '../../../data/pca_3dumap_outputs_with_metadata.json';
+import './PointCloud.css';
 
 
 function PointCloud({ node, cloudStyle }) {
