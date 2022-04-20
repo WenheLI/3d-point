@@ -2,7 +2,7 @@ import React, { Component, useEffect, useRef, useState } from 'react';
 import cgl from '../../lib/clustergrammer-gl.node';
 import data from '../../../data/cytof.json';
 
-function HeatMap({setNode, style}) {
+function HeatMap({setNode, style, selectedNode}) {
     const containerRef = useRef(null);
     const cg = useRef(null);
 
