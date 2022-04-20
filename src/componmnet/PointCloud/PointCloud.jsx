@@ -4,7 +4,7 @@ import oriData from '../../../data/pca_3dumap_outputs_with_metadata.json';
 import './PointCloud.css';
 
 
-function PointCloud({ node, setNode }) {
+function PointCloud({ node, style, setNode }) {
     const canvasRef = useRef(null);
     const camera = useRef(null);
     const controls = useRef(null);
@@ -12,9 +12,8 @@ function PointCloud({ node, setNode }) {
 
     useEffect(() => {
         if (canvasRef.current !== null) {
-            const {camera: localCam, 
-                    controls: localControl, 
-                    nodePool: localNodePool} = main(canvasRef.current, oriData, .45, setNode);
+            const {camera: localCam, controls: localControl, nodePool: localNodePool} = 
+                main(canvasRef.current, oriData, style.canvasRatio, style.backgroundColor, setNode);
             camera.current = localCam;
             controls.current = localControl;
             nodePool.current = localNodePool;
@@ -29,10 +28,8 @@ function PointCloud({ node, setNode }) {
 
     return (
         <div ref={canvasRef} style={{
-            width: '45%',
-            height: '45%',
-            left: '50%',
-            position: 'absolute',
+            width: style.width,
+            height: style.height,
         }}></div>
     )
 }
