@@ -13,7 +13,7 @@ function HeatMap({setNode, style, selectedNode}) {
                 'network': data,
                 'viz_width' : style.width,
                 'viz_height': style.height,
-                'hide_panels': false,
+                'hide': true,
                 'onclick': function(row, col) {
                     setNode(col);
                 }
