@@ -31,7 +31,12 @@ function HeatMap({setNode, style, selectedNode}) {
     }, [selectedNode]);
     
     return (
-        <div id='HeatMap-Container' ref={containerRef}>
+        <div id='HeatMap-Container' ref={containerRef}
+            stlye={{
+                   'width': style.width,
+                   'height': style.height
+                  }}
+        >
 
         </div>
     )
