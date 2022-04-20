@@ -46,9 +46,6 @@ const main = (canvas, data, ratio, backgroundColor, setNodes) => {
         nodePool[data[i].id] = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
             color: randomColorHex(),
         }));
-        nodePool[data[i].id].userData = {
-            'id': data[i].id,
-        }
         nodePool[data[i].id].position.x = data[i].umap1;
         nodePool[data[i].id].position.y = data[i].umap2;
         nodePool[data[i].id].position.z = data[i].umap3;
@@ -129,19 +126,18 @@ const main = (canvas, data, ratio, backgroundColor, setNodes) => {
 
     canvas.addEventListener( 'pointerdown', function ( event ) {
         if (!helper.enable) return ;
-        let bounds = canvas.getBoundingClientRect();
-        let x = event.clientX - bounds.left;
-        let y = event.clientY - bounds.top;
+        let x = event.clientX - boundingRect.left;
+        let y = event.clientY - boundingRect.top;
 
         for ( const item of selectionBox.collection ) {
             item.material.emissive.set( 0x000000 );
         }
 
         selectionBox.startPoint.set(
-            ( x / bounds.width ) * 2 - 1,
-            - ( y / bounds.height ) * 2 + 1,
+            ( x / boundingRect.width ) * 2 - 1,
+            - ( y / boundingRect.height ) * 2 + 1,
             0.5 );
-    } );
+    });
 
     canvas.addEventListener( 'pointerup', function ( event ) {
         if (!helper.enable) return ;
@@ -159,7 +155,7 @@ const main = (canvas, data, ratio, backgroundColor, setNodes) => {
 
         for ( let i = 0; i < allSelected.length; i ++ ) {
             allSelected[i].material.emissive.set( 0xffffff );
-            selectNodes.push(allSelected[i].userData.id);
+            selectNodes.push(allSelected[i].userData['label']);
         }
 
         setNodes(selectNodes);

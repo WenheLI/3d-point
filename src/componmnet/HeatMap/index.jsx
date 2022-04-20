@@ -19,7 +19,6 @@ function HeatMap({setNode, style, selectedNode}) {
                 }
             }
             cg.current = new cgl(args);
-            window.c = cg.current
 
         }
           
