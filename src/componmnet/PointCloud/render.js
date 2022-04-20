@@ -15,10 +15,10 @@ const updateCamera = (camera, controls, nodeMesh) => {
     controls.update();
 }
 
-const main = (canvas, data, ratio) => {
+const main = (canvas, data, ratio, backgroundColor, setNodes) => {
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x111f0f);
-    const color = 0xffffff;
+    scene.background = new THREE.Color(backgroundColor);
+    const color = 0xdbdbdb;
     const intensity = 2;
 
     const ambientLight = new THREE.AmbientLight(color, intensity);
@@ -49,13 +49,62 @@ const main = (canvas, data, ratio) => {
         nodePool[data[i].id].position.x = data[i].umap1;
         nodePool[data[i].id].position.y = data[i].umap2;
         nodePool[data[i].id].position.z = data[i].umap3;
+        nodePool[data[i].id].userData = {
+            'label': data[i].id,
+        }
         scene.add(nodePool[data[i].id]);
     }
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
-
     renderer.render(scene, camera);
+
+    // raycasting for showing text
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector3();
+    let boundingRect = renderer.domElement.getBoundingClientRect();
+    let mouseX = null;
+    let mouseY = null;
+    let lastLabel = '';
+
+    function onMouseMove(event) {
+        let x = (event.clientX - boundingRect.left);
+        let y = (event.clientY - boundingRect.top);
+        mouse.x = (x / boundingRect.width) * 2 - 1;
+        mouse.y = - (y / boundingRect.height) * 2 + 1;
+        mouse.z = 0.5;
+        raycaster.setFromCamera(mouse, camera);
+
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+
+    }
+    canvas.addEventListener('mousemove', onMouseMove);
+
+    function renderLabel() {
+        const intersects = raycaster.intersectObjects( scene.children );
+        let hovEvent = undefined;
+        let curLabel;
+
+        if (intersects.length > 0) {
+            curLabel = intersects[0].object.userData['label'];
+            if (curLabel !== lastLabel) {
+                hovEvent = new CustomEvent('clientHovIn', {
+                    detail: {x: mouseX, y: mouseY, label: curLabel}
+                }); 
+            }
+        } else {
+            curLabel = '';
+            if (curLabel !== lastLabel) {
+                hovEvent = new CustomEvent('clientHovOut', {});
+            }
+        }
+        if (hovEvent) {
+            document.dispatchEvent(hovEvent);
+            lastLabel = curLabel;  
+            hovEvent = undefined;
+        }
+    }
 
     // setup selection box
 
@@ -65,7 +114,6 @@ const main = (canvas, data, ratio) => {
     document.addEventListener('keydown', (e) => {
         if (e.key == 'Shift') {
             helper.enable = true;
-            console.log(helper)
         }
     });
 
@@ -76,52 +124,23 @@ const main = (canvas, data, ratio) => {
     })
 
 
-    document.addEventListener( 'pointerdown', function ( event ) {
-        let bounds = canvas.getBoundingClientRect();
-        let x = event.clientX - bounds.left;
-        let y = event.clientY - bounds.top;
-        console.log(x, y)
+    canvas.addEventListener( 'pointerdown', function ( event ) {
+        if (!helper.enable) return ;
+        let x = event.clientX - boundingRect.left;
+        let y = event.clientY - boundingRect.top;
 
         for ( const item of selectionBox.collection ) {
-
             item.material.emissive.set( 0x000000 );
-
         }
 
         selectionBox.startPoint.set(
-            ( x / bounds.width ) * 2 - 1,
-            - ( y / bounds.height ) * 2 + 1,
+            ( x / boundingRect.width ) * 2 - 1,
+            - ( y / boundingRect.height ) * 2 + 1,
             0.5 );
+    });
 
-    } );
-
-    document.addEventListener( 'pointermove', function ( event ) {
-        if ( helper.isDown ) {
-
-            for ( let i = 0; i < selectionBox.collection.length; i ++ ) {
-
-                selectionBox.collection[ i ].material.emissive.set( 0x000000 );
-
-            }
-
-            selectionBox.endPoint.set(
-                ( event.clientX / window.innerWidth ) * 2 - 1,
-                - ( event.clientY / window.innerHeight ) * 2 + 1,
-                0.5 );
-
-            const allSelected = selectionBox.select();
-
-            for ( let i = 0; i < allSelected.length; i ++ ) {
-
-                allSelected[i].material.emissive.set( 0xffffff );
-
-            }
-
-        }
-
-    } );
-
-    document.addEventListener( 'pointerup', function ( event ) {
+    canvas.addEventListener( 'pointerup', function ( event ) {
+        if (!helper.enable) return ;
         let bounds = canvas.getBoundingClientRect();
         let x = event.clientX - bounds.left;
         let y = event.clientY - bounds.top;
@@ -131,18 +150,21 @@ const main = (canvas, data, ratio) => {
             0.5 );
 
         const allSelected = selectionBox.select();
+        
+        const selectNodes = []
 
         for ( let i = 0; i < allSelected.length; i ++ ) {
-
-            allSelected[ i ].material.emissive.set( 0xffffff );
-
+            allSelected[i].material.emissive.set( 0xffffff );
+            selectNodes.push(allSelected[i].userData['label']);
         }
+
+        setNodes(selectNodes);
 
     } );
 
-
     function animate() {
         requestAnimationFrame(animate);
+        renderLabel();
         renderer.render(scene, camera);
     };
 
