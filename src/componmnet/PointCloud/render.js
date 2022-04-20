@@ -15,7 +15,7 @@ const updateCamera = (camera, controls, nodeMesh) => {
     controls.update();
 }
 
-const main = (canvas, data, ratio, backgroundColor) => {
+const main = (canvas, data, ratio, backgroundColor, setNodes) => {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(backgroundColor);
     const color = 0xdbdbdb;
@@ -114,7 +114,6 @@ const main = (canvas, data, ratio, backgroundColor) => {
     document.addEventListener('keydown', (e) => {
         if (e.key == 'Shift') {
             helper.enable = true;
-            console.log(helper)
         }
     });
 
@@ -125,51 +124,23 @@ const main = (canvas, data, ratio, backgroundColor) => {
     })
 
 
-    document.addEventListener( 'pointerdown', function ( event ) {
-        let bounds = canvas.getBoundingClientRect();
-        let x = event.clientX - bounds.left;
-        let y = event.clientY - bounds.top;
+    canvas.addEventListener( 'pointerdown', function ( event ) {
+        if (!helper.enable) return ;
+        let x = event.clientX - boundingRect.left;
+        let y = event.clientY - boundingRect.top;
 
         for ( const item of selectionBox.collection ) {
-
             item.material.emissive.set( 0x000000 );
-
         }
 
         selectionBox.startPoint.set(
-            ( x / bounds.width ) * 2 - 1,
-            - ( y / bounds.height ) * 2 + 1,
+            ( x / boundingRect.width ) * 2 - 1,
+            - ( y / boundingRect.height ) * 2 + 1,
             0.5 );
+    });
 
-    } );
-
-    document.addEventListener( 'pointermove', function ( event ) {
-        if ( helper.isDown ) {
-
-            for ( let i = 0; i < selectionBox.collection.length; i ++ ) {
-
-                selectionBox.collection[ i ].material.emissive.set( 0x000000 );
-
-            }
-
-            selectionBox.endPoint.set(
-                ( event.clientX / window.innerWidth ) * 2 - 1,
-                - ( event.clientY / window.innerHeight ) * 2 + 1,
-                0.5 );
-
-            const allSelected = selectionBox.select();
-
-            for ( let i = 0; i < allSelected.length; i ++ ) {
-
-                allSelected[ i ].material.emissive.set( 0xffffff );
-
-            }
-
-        }
-
-    } );
-
-    document.addEventListener( 'pointerup', function ( event ) {
+    canvas.addEventListener( 'pointerup', function ( event ) {
+        if (!helper.enable) return ;
         let bounds = canvas.getBoundingClientRect();
         let x = event.clientX - bounds.left;
         let y = event.clientY - bounds.top;
@@ -179,12 +150,15 @@ const main = (canvas, data, ratio, backgroundColor) => {
             0.5 );
 
         const allSelected = selectionBox.select();
+        
+        const selectNodes = []
 
         for ( let i = 0; i < allSelected.length; i ++ ) {
-
-            allSelected[ i ].material.emissive.set( 0xffffff );
-
+            allSelected[i].material.emissive.set( 0xffffff );
+            selectNodes.push(allSelected[i].userData['label']);
         }
+
+        setNodes(selectNodes);
 
     } );
 

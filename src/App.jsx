@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import Network from './componmnet/Network/Network';
 import HeatMap from './componmnet/HeatMap/index';
 import PointCloud from './componmnet/PointCloud/PointCloud';
@@ -8,6 +8,7 @@ function App() {
     const [layout, setLayout] = React.useState(0);
     const [node, setNode] = React.useState(null);
 
+    const [selectNodes, setSelectionNodes] = useState([]);
     const heatMapStyle = {width: 650, height: 500};
     const cloudStyle = {width: '45%', height: '45%', 
                         canvasRatio: .6, backgroundColor: 0xffffff};
@@ -27,12 +28,12 @@ function App() {
                 <Network  layout={layout} /> */}
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <h1>Heat Map</h1>
-                    <HeatMap setNode={setNode} style={heatMapStyle}/>
+                    <HeatMap setNode={setNode} selectedNode={selectNodes} style={heatMapStyle}/>
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <h1>3D Visualization</h1>
-                    <PointCloud node={node} style={cloudStyle}/>
+                    <PointCloud node={node} setNode={setSelectionNodes} style={cloudStyle}/>
                 </div>
             </div>
         </div>

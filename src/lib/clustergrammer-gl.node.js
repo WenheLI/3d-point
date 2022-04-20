@@ -73900,6 +73900,7 @@ module.exports = function track_interaction_zoom_data(regl, params, ev){
 function clustergrammer_gl(args, external_model=null){
 
   var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
+  let draw_webgl_layers = __webpack_require__(/*! ./draws/draw_webgl_layers */ "./src/draws/draw_webgl_layers.js")
 
   console.log('#################################');
   console.log('clustergrammer-gl version 0.23.0');
@@ -73911,6 +73912,13 @@ function clustergrammer_gl(args, external_model=null){
   if (args.container !=null){
 
     cgm.args = args;
+
+    cgm.utils = {
+      'highlight': (rows) => {
+        cgm.params.search.searched_rows = rows;
+        draw_webgl_layers(cgm)
+      }
+    }
 
     cgm.initialize_params = __webpack_require__(/*! ./params/initialize_params */ "./src/params/initialize_params.js");
     // cgm.decompress_network = require('./params/decompress_network');
@@ -74940,17 +74948,21 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
 
   let searched_rows = params.search.searched_rows
 
+  let searchSpace = undefined;
+  if (inst_axis === 'row'){
+    searchSpace = params.network.row_node_names;
+  } else if (inst_axis === 'col'){
+    searchSpace = params.network.col_node_names;
+  }
   // change color of selected rows
   let color_arr = color_arr_ini.map((x,i) => {
-    if (inst_axis === 'row'){
-      let inst_name = params.network.row_node_names[i]
-      if (searched_rows.includes(inst_name)){
-        x = color_to_rgba('red', 1.0)
-      }
+    let inst_name = searchSpace[i]
+    x = inst_rgba;
+    if (searched_rows.includes(inst_name)){
+      x = color_to_rgba('red', 1.0)
     }
     return x
-
-  })
+  });
 
   const color_buffer = regl.buffer({
     length: num_labels,
