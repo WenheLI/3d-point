@@ -25,7 +25,6 @@ function HeatMap({setNode, style, selectedNode}) {
     }, [containerRef]);
 
     useEffect(() => {
-        console.log(selectedNode)
         if (cg.current !== null && selectedNode !== null) {
             cg.current.utils.highlight(selectedNode);
         }
