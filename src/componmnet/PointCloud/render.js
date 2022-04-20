@@ -83,7 +83,7 @@ const main = (canvas, data, ratio, backgroundColor) => {
 
     function renderLabel() {
         const intersects = raycaster.intersectObjects( scene.children );
-        let hovEvent;
+        let hovEvent = undefined;
         let curLabel;
 
         if (intersects.length > 0) {
@@ -99,8 +99,11 @@ const main = (canvas, data, ratio, backgroundColor) => {
                 hovEvent = new CustomEvent('clientHovOut', {});
             }
         }
-        document.dispatchEvent(hovEvent);
-        lastLabel = curLabel; 
+        if (hovEvent) {
+            document.dispatchEvent(hovEvent);
+            lastLabel = curLabel;  
+            hovEvent = undefined;
+        }
     }
 
     // setup selection box
@@ -126,7 +129,6 @@ const main = (canvas, data, ratio, backgroundColor) => {
         let bounds = canvas.getBoundingClientRect();
         let x = event.clientX - bounds.left;
         let y = event.clientY - bounds.top;
-        console.log(x, y)
 
         for ( const item of selectionBox.collection ) {
 
