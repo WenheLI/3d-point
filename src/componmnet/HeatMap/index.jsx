@@ -13,7 +13,7 @@ function HeatMap({setNode, style, selectedNode}) {
                 'network': data,
                 'viz_width' : style.width,
                 'viz_height': style.height,
-                'hide_panels': false,
+                'hide': true,
                 'onclick': function(row, col) {
                     setNode(col);
                 }
@@ -31,7 +31,12 @@ function HeatMap({setNode, style, selectedNode}) {
     }, [selectedNode]);
     
     return (
-        <div id='HeatMap-Container' ref={containerRef}>
+        <div id='HeatMap-Container' ref={containerRef}
+                style={{
+                    width: style.width,
+                    height: style.height,
+                }}
+        >
 
         </div>
     )
