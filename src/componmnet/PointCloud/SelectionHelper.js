@@ -15,7 +15,6 @@ class SelectionHelper {
         this.enable = false;
 
         this.onPointerDown = function (event) {
-            console.log(this.enable)
             this.isDown = true;
             this.onSelectStart(event);
 
