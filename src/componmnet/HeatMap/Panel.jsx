@@ -1,30 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import './Panel.css';
 import { DownOutlined } from '@ant-design/icons';
-import { Menu, Dropdown, Button, AutoComplete} from 'antd';
+import { Menu, Dropdown, Button, AutoComplete, Slider} from 'antd';
 
-const mockVal = (str, repeat) => ({
-    value: str.repeat(repeat),
-  });
+const tabDesc = {
+    'reorder': ['Row', 'Col'],
+    'recluster': ['Dist', 'Link'],
+}
+const tabOptions = ['reorder', 'recluster'];
+const orderOptions = ['clust', 'sum', 'var', 'ini'];
+const reclusterOptions = {
+    'dist': ['', 'cosine', 'euclidean', 'correlation'],
+    'link': ['', 'complete', 'average', 'single'],
+};
 
 function Panel({cgm}) {
     const [tab, setTab] = useState(0);
-    const [options, setOptions] = useState([]);
+    const [searchOptions, setSearchOptions] = useState([]);
     const [orderData, setOrderData] = useState({
         'reorder': {'row': 0, 'col': 0},
         'recluster': {'dist': 0, 'link': 0},
     });
-    
-    const tabDesc = {
-        'reorder': ['Row', 'Col'],
-        'recluster': ['Dist', 'Link'],
-    }
-    const tabOptions = ['reorder', 'recluster'];
-    const orderOptions = ['clust', 'sum', 'var', 'ini'];
-    const reclusterOptions = {
-        'dist': ['', 'cosine', 'euclidean', 'correlation'],
-        'link': ['', 'complete', 'average', 'single'],
-    };
+    const [searchContent, setSearchContent] = useState('');
 
     const orderItems = orderOptions.map((order, idx) => {
         return {
@@ -48,32 +45,35 @@ function Panel({cgm}) {
         })
     };
 
-
-    const onSearch = (searchText) => {
-        setOptions(
-            !searchText ? [] : [mockVal(searchText, 1), mockVal(searchText, 2), mockVal(searchText, 3)],
-        );
-        };
-    const onSelect = (data) => {
-        console.log('onSelect', data);
-    };
+    useEffect(() => {
+        if (cgm) {
+            const options = cgm.params.network.row_node_names.map((it) => {
+                return {
+                    value: it,
+                }
+            });
+            setSearchOptions(options);
+        }
+    }, [cgm])
 
     useEffect(() => {
-        if (!cgm.current) return ;
+        if (!cgm) return ;
         if (tab === 0) {
             const rowValue = orderData['reorder']['row'];
             const colValue = orderData['reorder']['col'];
-            cgm.current.functions.reorder('row', orderOptions[rowValue]);
-            cgm.current.functions.reorder('col', orderOptions[colValue]);
+            cgm.functions.reorder('row', orderOptions[rowValue]);
+            cgm.functions.reorder('col', orderOptions[colValue]);
         } else if (tab === 1) {
             const disValue = reclusterOptions.dist[orderData['recluster']['dist']];
             const linkValue = reclusterOptions.link[orderData['recluster']['link']];
-            console.log(disValue, linkValue);
-            cgm.current.functions.recluster(disValue, linkValue);
+            cgm.functions.recluster(disValue, linkValue);
         }
     }, [orderData]);
     
-
+    const handleSearch = () => {
+        if (!cgm) return ;
+        cgm.utils.highlight(searchContent);
+    }
 
     const buildMenu = (axis) => {
         let items = undefined
@@ -96,7 +96,10 @@ function Panel({cgm}) {
         )
     }
             
-      
+    const handleOpacityChange = (value) => {
+        if (!cgm) return ;
+        cgm.adjust_opacity(1 - value + 0.01);
+    }
     
     return (<div className='panel'>
             <div className='leftPanel'>
@@ -157,16 +160,24 @@ function Panel({cgm}) {
             </div>
 
             <div className='rightPanel'>
+                <div className='sliderPanel'>
+                    <span>Opacity Slider</span>
+                    <Slider onChange={handleOpacityChange} className='opacitySlider' min={0} max={1} step={0.1} />
+                </div>
                 <div className='searchPanel'>
                     <span>Search Gene</span>
                     <AutoComplete
-                        options={options}
+                        options={searchOptions}
                         style={{ width: 100, marginLeft: '10px' }}
-                        onSelect={onSelect}
-                        onSearch={onSearch}
+                        filterOption={(inputValue, option) => {
+                           return  option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                        }}
+                        onSelect={setSearchContent}
                         placeholder="input here"
                     />
-                    <Button>Search</Button>
+                    <Button
+                        onClick={handleSearch}
+                    >Search</Button>
                 </div>
         </div>
         

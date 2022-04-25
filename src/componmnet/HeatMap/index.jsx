@@ -6,7 +6,7 @@ import 'antd/dist/antd.css';
 
 function HeatMap({setNode, style, selectedNode}) {
     const containerRef = useRef(null);
-    const cg = useRef(null);
+    const [cg, setCg] = useState(null);
 
     useEffect(() => {
         if (containerRef.current !== null) {
@@ -20,15 +20,16 @@ function HeatMap({setNode, style, selectedNode}) {
                     setNode(col);
                 }
             }
-            cg.current = new cgl(args);
+            const cg = new cgl(args);
+            setCg(cg)
 
         }
           
     }, [containerRef]);
 
     useEffect(() => {
-        if (cg.current !== null && selectedNode !== null) {
-            cg.current.utils.highlight(selectedNode);
+        if (cg !== null && selectedNode !== null) {
+            cg.utils.highlight(selectedNode);
         }
     }, [selectedNode]);
     
