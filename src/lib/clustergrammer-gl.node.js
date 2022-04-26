@@ -76405,6 +76405,9 @@ module.exports = function initialize_regl(){
   var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
     extensions: ['angle_instanced_arrays'],
     container: canvas_container,
+    // attributes: {
+    //   preserveDrawingBuffer: true
+    // }
     // pixelRatio: window.devicePixelRatio/10
   });
 

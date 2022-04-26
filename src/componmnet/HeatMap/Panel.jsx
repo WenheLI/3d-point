@@ -102,83 +102,88 @@ function Panel({cgm}) {
     }
     
     return (<div className='panel'>
-            <div className='leftPanel'>
-                <div className='switchPanel'>
-                    <Button type='text'></Button>
-                    <div id='dropdownLabel' className='dropdownPanel'>
-                        {tabDesc[tabOptions[tab]].map((desc, idx) => 
-                            <span key={idx}>{desc}</span>
-                        )}
-                    </div>
-                </div>
-                <div className='switchPanel'>
-                    <Button className={tab == 0 ? 'selected' : ''}
-                            onClick={() => setTab(0)}
-                            type='text'>Reorder</Button>
-                    <div className='dropdownPanel'>
-                        {
-                            tab == 0 ? (
-                                <>
-                                <Dropdown overlay={buildMenu('row')} trigger={['click']}>
-                                    <Button>
-                                        {orderOptions[orderData.reorder.row]} <DownOutlined />
-                                    </Button>
-                                </Dropdown>
-                                <Dropdown overlay={buildMenu('col')} trigger={['click']}>
-                                    <Button>
-                                        {orderOptions[orderData.reorder.col]} <DownOutlined />
-                                    </Button>
-                                </Dropdown>
-                                </>
-                            ) : <></>
-                        }
-                    </div>
-                </div>
-                <div className='switchPanel'>
-                    <Button className={tab == 1 ? 'selected' : ''} 
-                            onClick={() => setTab(1)}
-                            type='text'>Recluster</Button>
-                    <div className='dropdownPanel'>
-                        {
-                            tab == 1 ? (
-                                <>
-                                <Dropdown overlay={buildMenu('dist')} trigger={['click']}>
-                                    <Button>
-                                        {reclusterOptions.dist[orderData.recluster.dist]} <DownOutlined />
-                                    </Button>
-                                </Dropdown>
-                                <Dropdown overlay={buildMenu('link')} trigger={['click']}>
-                                    <Button>
-                                        {reclusterOptions.link[orderData.recluster.link]} <DownOutlined />
-                                    </Button>
-                                </Dropdown>
-                                </>
-                            ) : <></>
-                        }
-                    </div>
-                </div>
+            <div className='panel-header'>
+                <h1>Heat Map</h1>
             </div>
+            <div className='panel-body'>
+                <div className='leftPanel'>
+                    <div className='switchPanel'>
+                        <Button type='text'></Button>
+                        <div id='dropdownLabel' className='dropdownPanel'>
+                            {tabDesc[tabOptions[tab]].map((desc, idx) => 
+                                <span key={idx}>{desc}</span>
+                            )}
+                        </div>
+                    </div>
+                    <div className='switchPanel'>
+                        <Button className={tab == 0 ? 'selected' : ''}
+                                onClick={() => setTab(0)}
+                                type='text'>Reorder</Button>
+                        <div className='dropdownPanel'>
+                            {
+                                tab == 0 ? (
+                                    <>
+                                    <Dropdown overlay={buildMenu('row')} trigger={['click']}>
+                                        <Button>
+                                            {orderOptions[orderData.reorder.row]} <DownOutlined />
+                                        </Button>
+                                    </Dropdown>
+                                    <Dropdown overlay={buildMenu('col')} trigger={['click']}>
+                                        <Button>
+                                            {orderOptions[orderData.reorder.col]} <DownOutlined />
+                                        </Button>
+                                    </Dropdown>
+                                    </>
+                                ) : <></>
+                            }
+                        </div>
+                    </div>
+                    <div className='switchPanel'>
+                        <Button className={tab == 1 ? 'selected' : ''} 
+                                onClick={() => setTab(1)}
+                                type='text'>Recluster</Button>
+                        <div className='dropdownPanel'>
+                            {
+                                tab == 1 ? (
+                                    <>
+                                    <Dropdown overlay={buildMenu('dist')} trigger={['click']}>
+                                        <Button>
+                                            {reclusterOptions.dist[orderData.recluster.dist]} <DownOutlined />
+                                        </Button>
+                                    </Dropdown>
+                                    <Dropdown overlay={buildMenu('link')} trigger={['click']}>
+                                        <Button>
+                                            {reclusterOptions.link[orderData.recluster.link]} <DownOutlined />
+                                        </Button>
+                                    </Dropdown>
+                                    </>
+                                ) : <></>
+                            }
+                        </div>
+                    </div>
+                </div>
 
-            <div className='rightPanel'>
-                <div className='sliderPanel'>
-                    <span>Opacity Slider</span>
-                    <Slider onChange={handleOpacityChange} className='opacitySlider' min={0} max={1} step={0.1} />
-                </div>
-                <div className='searchPanel'>
-                    <span>Search Gene</span>
-                    <AutoComplete
-                        options={searchOptions}
-                        style={{ width: 100, marginLeft: '10px' }}
-                        filterOption={(inputValue, option) => {
-                           return  option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                        }}
-                        onSelect={setSearchContent}
-                        placeholder="input here"
-                    />
-                    <Button
-                        onClick={handleSearch}
-                    >Search</Button>
-                </div>
+                <div className='rightPanel'>
+                    <div className='sliderPanel'>
+                        <span>Opacity Slider</span>
+                        <Slider onChange={handleOpacityChange} className='opacitySlider' min={0} max={1} step={0.1} />
+                    </div>
+                    <div className='searchPanel'>
+                        <span>Search Gene</span>
+                        <AutoComplete
+                            options={searchOptions}
+                            style={{ width: 100, marginLeft: '10px' }}
+                            filterOption={(inputValue, option) => {
+                            return  option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                            }}
+                            onSelect={setSearchContent}
+                            placeholder="input here"
+                        />
+                        <Button
+                            onClick={handleSearch}
+                        >Search</Button>
+                    </div>
+            </div>
         </div>
         
     </div>)
