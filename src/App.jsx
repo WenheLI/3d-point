@@ -15,8 +15,11 @@ function App() {
 
     return (
         <div>
+            <h1>
+                Awesome Visualization
+            </h1>
             <Tooltip />
-            <div style={{display: "flex"}}>
+            <div style={{display: "flex", flexDirection: "row"}}>
                 {/* <div>
                     <button onClick={() => setLayout(0)}> KK </button>
                     <button onClick={() => setLayout(1)}> Sphere </button>
@@ -26,15 +29,9 @@ function App() {
                     <button onClick={() => setLayout(5)}> Drl </button>
                 </div>
                 <Network  layout={layout} /> */}
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <h1>Heat Map</h1>
-                    <HeatMap setNode={setNode} selectedNode={selectNodes} style={heatMapStyle}/>
-                </div>
+                <HeatMap setNode={setNode} selectedNode={selectNodes} style={heatMapStyle}/>
 
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <h1>3D Visualization</h1>
-                    <PointCloud node={node} setNode={setSelectionNodes} style={cloudStyle}/>
-                </div>
+                <PointCloud node={node} setNode={setSelectionNodes} style={cloudStyle}/>
             </div>
         </div>
     )

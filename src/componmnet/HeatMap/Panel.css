@@ -1,0 +1,96 @@
+.panel {
+    display: flex;
+    flex-direction: column;
+    margin-left: 12px;
+    margin-right: 12px;
+}
+.panel-body {
+    display: flex;
+    flex-direction: row;
+    border-radius: 12px;
+    background-color: #fefefe;
+    box-shadow: 0px 0px 1px #0f0f0f;
+}
+
+.leftPanel {
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    /* background-color: #ccc;
+    border-radius: 12px;
+    margin: 8px; */
+}
+
+.dropdownPanel {
+    display: flex;
+    flex-direction: column;
+}
+
+.selected {
+    border-bottom: 1px solid #ccc !important;
+}
+
+.switchPanel {
+    display: flex;
+    flex-direction: column;
+    margin: 3px;
+    width: 30%;
+
+}
+
+.dropdownPanel button {
+    margin: 2px;
+}
+
+.dropdownPanel span {
+    margin: 2px;
+}
+
+#dropdownLabel {
+    height: 100%;
+    justify-content: space-around;
+}
+
+.rightPanel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.rightPanel span {
+    align-self: center;
+}
+
+.searchPanel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-self: end;
+    margin-bottom: 3px;
+}
+
+.searchPanel button {
+    margin-left: 3px;
+}
+
+.panel-body {
+    height: 120px;
+}
+
+.sliderPanel {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.opacitySlider {
+    width: 60%;
+    margin-left: 10px !important;
+}
+
+.downloadIcon {
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}

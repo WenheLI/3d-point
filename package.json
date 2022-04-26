@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
+    "antd": "^4.20.0-alpha.1",
     "clustergrammer-gl": "^0.23.0",
     "igraph-wasm": "^0.0.3",
     "react": "^17.0.2",
