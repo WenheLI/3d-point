@@ -15,6 +15,9 @@ function App() {
 
     return (
         <div>
+            <h1>
+                Awesome Visualization
+            </h1>
             <Tooltip />
             <div style={{display: "flex", flexDirection: "row"}}>
                 {/* <div>
