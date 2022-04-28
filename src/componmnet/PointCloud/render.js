@@ -15,7 +15,7 @@ const updateCamera = (camera, controls, nodeMesh) => {
     controls.update();
 }
 
-const main = (canvas, data, ratio, backgroundColor, setNodes) => {
+const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, hasDensity) => {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(backgroundColor);
     const color = 0xdbdbdb;
@@ -34,29 +34,53 @@ const main = (canvas, data, ratio, backgroundColor, setNodes) => {
     const camera = new THREE.PerspectiveCamera( 75, window.innerWidth * ratio / (window.innerHeight * ratio), 0.1, 1000 );
     camera.position.z = 5;
 
+
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth * ratio, window.innerHeight * ratio);
     canvas.appendChild(renderer.domElement);
+
 
     const geometry = new THREE.SphereGeometry(.05);
 
     const nodePool = {};
 
+    let Rainbow = require('../../../node_modules/rainbowvis.js')
+    let myRainbow = new Rainbow();
+    myRainbow.setNumberRange(0, 1);
+    myRainbow.setSpectrum('#DC1C13', '#F6BDC0');
+
+
     for (let i = 0; i < data.length; i++) {
+        let color = null;
+        if (hasDensity) {
+            color = myRainbow.colourAt(Math.random());
+            color = `#${color}`;
+        } else {
+            color = randomColorHex();
+        }
+        
         nodePool[data[i].id] = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
-            color: randomColorHex(),
+            color: color,
         }));
+
         nodePool[data[i].id].position.x = data[i].umap1;
         nodePool[data[i].id].position.y = data[i].umap2;
-        nodePool[data[i].id].position.z = data[i].umap3;
+ 
+        nodePool[data[i].id].position.z = is3d ? data[i].umap3 : 0.5;
         nodePool[data[i].id].userData = {
             'label': data[i].id,
         }
         scene.add(nodePool[data[i].id]);
     }
 
+
+    
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
+    if (!is3d) {
+        controls.enableRotate = false;
+        controls.enablePan = true;
+    }
     renderer.render(scene, camera);
 
     // raycasting for showing text

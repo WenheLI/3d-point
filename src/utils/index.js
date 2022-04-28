@@ -28,7 +28,12 @@ function preprocess(data) {
 }
 
 function randomColorHex() {
-    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+    // generate only dark color
+    let color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += Math.floor(Math.random() * 10);
+    }
+    return color;
 }
 
 const prepareMaterial = (data) => {
