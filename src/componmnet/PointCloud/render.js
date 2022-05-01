@@ -6,8 +6,9 @@ import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import SelectionHelper from './SelectionHelper';
 
 const updateCamera = (camera, controls, nodeMesh) => {
-    const {x, y, z} = nodeMesh.position;
-   
+    let {x, y, z} = nodeMesh.position;
+    x = parseInt(x);
+    y = parseInt(y);
     camera.position.set(x, y, z - 1.5);
     const nodePos = new THREE.Vector3(x, y, z);
     camera.lookAt(nodePos);
@@ -47,7 +48,9 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, hasDensity) 
     let Rainbow = require('../../../node_modules/rainbowvis.js')
     let myRainbow = new Rainbow();
     myRainbow.setNumberRange(0, 1);
-    myRainbow.setSpectrum('#DC1C13', '#F6BDC0');
+    //myRainbow.setSpectrum('#DC1C13', '#F6BDC0');
+    myRainbow.setSpectrum('#FE0002', '#0302FC');
+    
 
 
     for (let i = 0; i < data.length; i++) {
@@ -96,12 +99,11 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, hasDensity) 
         let y = (event.clientY - boundingRect.top);
         mouse.x = (x / boundingRect.width) * 2 - 1;
         mouse.y = - (y / boundingRect.height) * 2 + 1;
-        mouse.z = 0.5;
+        mouse.z = 0;
         raycaster.setFromCamera(mouse, camera);
 
         mouseX = event.clientX;
         mouseY = event.clientY;
-
     }
     canvas.addEventListener('mousemove', onMouseMove);
 

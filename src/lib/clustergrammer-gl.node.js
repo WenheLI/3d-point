@@ -72898,10 +72898,17 @@ module.exports = function initialize_containers(){
 
   var inst_height = this.args.viz_height;
   var inst_width  = this.args.viz_width;
-
-  d3.select(canvas_container)
+  if (inst_height instanceof String && inst_width instanceof String) {
+    d3.select(canvas_container)
+    .style('height',inst_height)
+    .style('width',inst_width);
+  } else {
+    d3.select(canvas_container)
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px');
+  }
+
+  
 
   // console.log(canvas_container)
   this.canvas_container = canvas_container;
@@ -72918,7 +72925,6 @@ module.exports = function initialize_containers(){
 /***/ (function(module, exports) {
 
 module.exports = function viz_from_network(external_model){
-
   this.initialize_containers();
   this.initialize_regl();
 
@@ -73917,6 +73923,24 @@ function clustergrammer_gl(args, external_model=null){
       'highlight': (rows) => {
         cgm.params.search.searched_rows = rows;
         draw_webgl_layers(cgm)
+      }
+    }
+
+    cgm.functions = {
+      'reorder': (i_axis, order) => {
+        const clean_order = order.replace('sum', 'rank').replace('var', 'rankvar')
+        if (cgm.params.order.inst[i_axis] === clean_order) return ;
+        __webpack_require__(/*! ./reorders/run_reorder */ "./src/reorders/run_reorder.js")(cgm.regl, cgm.params, i_axis, order);
+      },
+      'recluster': (distance, linkType) => {
+        cgm.params.matrix.potential_recluster.distance_metric = distance;
+        cgm.params.matrix.potential_recluster.linkage_type = linkType;
+        if (cgm.params.matrix.potential_recluster.distance_metric != cgm.params.matrix.distance_metric ||
+            cgm.params.matrix.potential_recluster.linkage_type != cgm.params.matrix.linkage_type){
+          cgm.params.matrix.distance_metric = cgm.params.matrix.potential_recluster.distance_metric;
+          cgm.params.matrix.linkage_type = cgm.params.matrix.potential_recluster.linkage_type;
+          cgm.recluster(cgm.params.matrix.potential_recluster.distance_metric, cgm.params.matrix.potential_recluster.linkage_type);
+        }
       }
     }
 
@@ -76389,6 +76413,9 @@ module.exports = function initialize_regl(){
   var regl = __webpack_require__(/*! regl */ "./node_modules/regl/dist/regl.js")({
     extensions: ['angle_instanced_arrays'],
     container: canvas_container,
+    // attributes: {
+    //   preserveDrawingBuffer: true
+    // }
     // pixelRatio: window.devicePixelRatio/10
   });
 
@@ -78050,7 +78077,7 @@ module.exports = function remove_lost_tooltips(){
 /***/ (function(module, exports) {
 
 module.exports = function run_hide_tooltip(params, click_on_heatmap=false){
-
+  if (!params.tooltip_fun) return ;
   if (params.tooltip.permanent_tooltip === false){
     params.tooltip_fun.hide();
     ;
@@ -78082,6 +78109,8 @@ var display_and_position_tooltip = __webpack_require__(/*! ./display_and_positio
 module.exports = function run_show_tooltip(cgm, external_model){
 
   let params = cgm.params;
+
+  if (cgm.args.hide) return ;
 
   if (params.tooltip.permanent_tooltip === false){
 

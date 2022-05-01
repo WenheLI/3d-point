@@ -9,9 +9,9 @@ function App() {
     const [node, setNode] = React.useState(null);
 
     const [selectNodes, setSelectionNodes] = useState([]);
-    const heatMapStyle = {width: 650, height: 500};
-    const cloudStyle = {width: '45%', height: '45%', 
-                        canvasRatio: .6, backgroundColor: 0xffffff};
+    const heatMapStyle = {widthRatio: .5, heightRatio: .5};
+    const cloudStyle = {widthRatio: .45, heightRatio: .45, 
+                        canvasRatio: .48, backgroundColor: 0xffffff};
 
     return (
         <div>

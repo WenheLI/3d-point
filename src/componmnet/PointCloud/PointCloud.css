@@ -3,3 +3,42 @@
     background-color: rgba(75, 160, 255, 0.3);
     position: fixed;
 }
+
+.pointCloud {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.buttonPanel {
+    width: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.buttonLeftGroup {
+    display: flex;
+    flex-direction: row;
+    
+}
+
+.buttonRightGroup {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.zoomPanel {
+    position: absolute;
+    bottom: 0;
+}
+
+.zoomPanel span {
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
