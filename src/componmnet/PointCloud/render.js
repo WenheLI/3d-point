@@ -7,8 +7,7 @@ import SelectionHelper from './SelectionHelper';
 
 const updateCamera = (camera, controls, nodeMesh) => {
     let {x, y, z} = nodeMesh.position;
-    x = parseInt(x);
-    y = parseInt(y);
+
     camera.position.set(x, y, z - 1.5);
     const nodePos = new THREE.Vector3(x, y, z);
     camera.lookAt(nodePos);
@@ -16,11 +15,19 @@ const updateCamera = (camera, controls, nodeMesh) => {
     controls.update();
 }
 
+const restoreHighlight = (nodeMesh) => {
+    nodeMesh.material.wireframe = false;
+}
+
+const highlightNode = (nodeMesh) => {
+    nodeMesh.material.wireframe = true;
+}
+
 const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, hasDensity) => {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(backgroundColor);
-    const color = 0xdbdbdb;
-    const intensity = 2;
+    const color = 0xffffff;
+    const intensity = 1.2;
 
     const ambientLight = new THREE.AmbientLight(color, intensity);
 
@@ -201,5 +208,7 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, hasDensity) 
 
 export {
     main,
+    highlightNode,
+    restoreHighlight,
     updateCamera
 }
