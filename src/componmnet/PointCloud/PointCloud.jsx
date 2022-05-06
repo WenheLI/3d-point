@@ -1,14 +1,14 @@
 import React, { Component, useEffect, useRef, useState } from 'react';
-import { main, updateCamera } from './render';
+import { main, updateCamera, restoreHighlight, highlightNode } from './render';
 import oriData from '../../../data/pca_3dumap_outputs_with_metadata.json';
 import data2D from '../../../data/pca_umap_outputs_with_metadata_Edgar.json';
 import './PointCloud.css';
 import Panel from './Panel';
-import { Button } from 'antd';
 import { CameraOutlined, PlusSquareFilled, MinusSquareFilled } from '@ant-design/icons';
+import { Button } from 'antd';
 
-
-function PointCloud({ node, style, setNode }) {
+function PointCloud({ node, style, setNode, setUI, regionSelectNodes}) {
+    // TODO Optimize the code
     const canvasRef = useRef(null);
     const canvas2DRef = useRef(null);
     const camera = useRef(null);
@@ -17,12 +17,10 @@ function PointCloud({ node, style, setNode }) {
     const camera2D = useRef(null);
     const controls2D = useRef(null);
     const nodePool2D = useRef(null);
-    const [display, setDisplay] = useState('');
-    const [display2D, setDisplay2D] = useState('');
-    const [buttonLabel, setLabel] = useState('2D');
 
+    const [is3D, setIs3D] = useState(true);
 
-    const [canvas, setCanvas] = useState(canvasRef);
+    const [prevHighlight, setPrevHighlight] = useState(new Set());
 
     const renderCanvas = (ref, data, stateCam, stateControl, stateNodePool, is3D) => {
         if (ref.current !== null) {
@@ -60,23 +58,14 @@ function PointCloud({ node, style, setNode }) {
 
     }, [canvas2DRef]);
 
-    useEffect(() => {
-        if (node !== null && camera.current && controls.current && nodePool.current[node]) {
-            updateCamera(camera.current, controls.current, nodePool.current[node]);
-        }
-        if (node !== null && camera2D.current && controls2D.current && nodePool2D.current[node]) {
-            updateCamera(camera2D.current, controls2D.current, nodePool2D.current[node]);
-        }
-    }, [node])
-
-    const inCavasPanel = () => {
+    const inCavasPanel = (setUI) => {
         return (
             <div>
                 <div className='buttonPanel'>
                     <div className='buttonLeftGroup'>
                         <CameraOutlined className='downloadIcon'></CameraOutlined>
-                        <Button>Point Cloud</Button>
-                        <Button>Network</Button>
+                        <Button onClick={() => setUI(0)}>Point Cloud</Button>
+                        <Button onClick={() => setUI(1)}>Network</Button>
                     </div>
                     <div className='buttonRightgroup'>
                         <Button>Reset</Button>
@@ -88,29 +77,56 @@ function PointCloud({ node, style, setNode }) {
                     <MinusSquareFilled />
                 </div>
             </div>
-            )
+        )
     }
+
+    // TODO optimize
+    useEffect(() => {
+        if (node !== null && camera.current && controls.current && nodePool.current[node]) {
+            // use for region highlight; disable camera update
+            is3D && updateCamera(camera.current, controls.current, nodePool.current[node]);
+
+        }
+
+        // potential bug
+        // if (node !== null && camera2D.current && controls2D.current && nodePool2D.current[node]) {
+        //     !is3D && updateCamera(camera2D.current, controls2D.current, nodePool2D.current[node]);
+        // }
+    }, [node]);
+
+    useEffect(() => {
+        const currPool = is3D ? nodePool.current : nodePool2D.current;
+        for (let node of prevHighlight) {
+            restoreHighlight(currPool[node]);
+        }
+
+        setPrevHighlight(new Set(regionSelectNodes));
+                    
+        for (let hightNode of regionSelectNodes) {
+            highlightNode(currPool[hightNode]);
+        }
+
+    }, [regionSelectNodes]);
+
+
     return (
         <div className='pointCloud'>
-            <Panel display={display} setDisplay={setDisplay} setDisplay2D={setDisplay2D} 
-                buttonLabel={buttonLabel} setLabel={setLabel} width={window.innerWidth * style.widthRatio}></Panel>
+            <Panel is3D={is3D} setIs3D={setIs3D} width={window.innerWidth * style.widthRatio}></Panel>
             <div style={{position: 'relative'}}>
                 <div ref={canvas2DRef} style={{
-                    position: 'absolute',
                     width: window.innerWidth * style.widthRatio,
                     height: window.innerHeight * style.heightRatio,
-                    display: display2D,
+                    display: is3D ? 'none' : 'block',
                 }}>
-                    {inCavasPanel()}
+                    {inCavasPanel(setUI)}
                 </div>
 
                 <div ref={canvasRef} style={{
-                    position: 'absolute',
                     width: window.innerWidth * style.widthRatio,
                     height: window.innerHeight * style.heightRatio,
-                    display: display,
+                    display: is3D ? 'block' : 'none',
                 }}>
-                    {inCavasPanel()}
+                    {inCavasPanel(setUI)}
                 </div>
             </div>
             

@@ -71073,24 +71073,23 @@ module.exports = function build_dendrogram_sliders(hide){
   var inst_top;
   var inst_left;
   var inst_rotate;
-  console.log(this.args);
 
   // hardwiring dendro slider position
   _.each(['row', 'col'], function(inst_axis){
 
     if (inst_axis === 'row'){
       inst_top = 175;
-      inst_left = this.argsviz_width + 25;
+      inst_left = params.viz_width - 25 ;
     } else {
       inst_top = 795;
-      inst_left = 5;
+      inst_left = 55;
     }
 
     axis_slider_container = d3.select(params.root + ' .canvas-container')
       .append('svg')
       .style('height', slider_length + 'px')
       .style('width', '20px')
-      .style('position', 'relative')
+      .style('position', 'absolute')
       .style('top', inst_top + 'px')
       .style('left', inst_left + 'px')
       .attr('class', inst_axis + '_dendro_slider_svg')
@@ -72898,17 +72897,10 @@ module.exports = function initialize_containers(){
 
   var inst_height = this.args.viz_height;
   var inst_width  = this.args.viz_width;
-  if (inst_height instanceof String && inst_width instanceof String) {
-    d3.select(canvas_container)
-    .style('height',inst_height)
-    .style('width',inst_width);
-  } else {
-    d3.select(canvas_container)
+
+  d3.select(canvas_container)
     .style('height',inst_height + 'px')
     .style('width',inst_width+'px');
-  }
-
-  
 
   // console.log(canvas_container)
   this.canvas_container = canvas_container;
@@ -73920,8 +73912,9 @@ function clustergrammer_gl(args, external_model=null){
     cgm.args = args;
 
     cgm.utils = {
-      'highlight': (rows) => {
+      'highlight': (rows, color='red') => {
         cgm.params.search.searched_rows = rows;
+        cgm.params.search.color = color;
         draw_webgl_layers(cgm)
       }
     }
@@ -74971,6 +74964,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
   // let color_arr = color_arr_ini
 
   let searched_rows = params.search.searched_rows
+  let defined_color = params.search.color ? params.search.color : 'red'
 
   let searchSpace = undefined;
   if (inst_axis === 'row'){
@@ -74983,7 +74977,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     let inst_name = searchSpace[i]
     x = inst_rgba;
     if (searched_rows.includes(inst_name)){
-      x = color_to_rgba('red', 1.0)
+      x = color_to_rgba(defined_color, 1.0)
     }
     return x
   });

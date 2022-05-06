@@ -3,25 +3,15 @@ import './Panel.css';
 import { DownOutlined } from '@ant-design/icons';
 import { Menu, Dropdown, Button, AutoComplete, Slider, Input} from 'antd';
 
-function Panel({display, setDisplay, setDisplay2D, buttonLabel, setLabel, width}) {
+function Panel({display, is3D, setIs3D, width}) {
 
     return (
         <div className='panel panel-3d'>
             <div className='panel-head-3d'>
                 <h1>Network</h1>
 
-                <a onClick={() => {
-                    if (display === "") {
-                        setDisplay("none");
-                        setDisplay2D("");
-                        setLabel("3D");
-                    } else {
-                        setDisplay("");
-                        setDisplay2D("none");
-                        setLabel("2D");
-                    }
-                }}> 
-                Switch to {buttonLabel}</a>
+                <a onClick={() => setIs3D((prev) => !prev)}> 
+                Switch to {!is3D ? '3D' : '2D'}</a>
             </div>
             <div className='panel-body-3d' style={{width: width}}>
                 <div className='slider-panel'>
