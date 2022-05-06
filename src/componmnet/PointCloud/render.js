@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import SelectionHelper from './SelectionHelper';
+import Rainbow from 'rainbowvis.js'
 
 const updateCamera = (camera, controls, nodeMesh) => {
     let {x, y, z} = nodeMesh.position;
@@ -16,10 +17,10 @@ const updateCamera = (camera, controls, nodeMesh) => {
     controls.update();
 }
 
-const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, hasDensity) => {
+const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, colorRand) => {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(backgroundColor);
-    const color = 0xdbdbdb;
+    const color = 0xffffff;
     const intensity = 2;
 
     const ambientLight = new THREE.AmbientLight(color, intensity);
@@ -40,31 +41,26 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, hasDensity) 
     renderer.setSize(window.innerWidth * ratio, window.innerHeight * ratio);
     canvas.appendChild(renderer.domElement);
 
-
     const geometry = new THREE.SphereGeometry(.05);
 
     const nodePool = {};
 
-    let Rainbow = require('../../../node_modules/rainbowvis.js')
     let myRainbow = new Rainbow();
     myRainbow.setNumberRange(0, 1);
-    //myRainbow.setSpectrum('#DC1C13', '#F6BDC0');
     myRainbow.setSpectrum('#FE0002', '#0302FC');
-    
 
 
     for (let i = 0; i < data.length; i++) {
         let color = null;
-        if (hasDensity) {
-            color = myRainbow.colourAt(Math.random());
-            color = `#${color}`;
-        } else {
+        if (colorRand) {
             color = randomColorHex();
+        } else {
+            color = myRainbow.colourAt(Math.random());
+            color = `0x${color}`; 
         }
         
-        nodePool[data[i].id] = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
-            color: color,
-        }));
+        nodePool[data[i].id] = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial());
+        nodePool[data[i].id].material.color.setHex(color)
 
         nodePool[data[i].id].position.x = data[i].umap1;
         nodePool[data[i].id].position.y = data[i].umap2;
@@ -105,6 +101,7 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, hasDensity) 
         mouseX = event.clientX;
         mouseY = event.clientY;
     }
+
     canvas.addEventListener('mousemove', onMouseMove);
 
     function renderLabel() {
@@ -133,7 +130,6 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, hasDensity) 
     }
 
     // setup selection box
-
     const selectionBox = new SelectionBox( camera, scene );
     const helper = new SelectionHelper( selectionBox, renderer, 'selectBox' );
 

@@ -29,7 +29,7 @@ function preprocess(data) {
 
 function randomColorHex() {
     // generate only dark color
-    let color = '#';
+    let color = '0x';
     for (var i = 0; i < 6; i++) {
         color += Math.floor(Math.random() * 10);
     }
@@ -48,39 +48,47 @@ const prepareMaterial = (data) => {
     return materialPool;
 }
 
-const mockData = {
-    data: {"1102952_EAV516015_Restaging_Batch 3.fcs": -0.396529312676444,
-           "1102952_EAV516045_Baseline_Batch 3.fcs": 2.0006758945345,
-           "1102952_EAV516051_Pre_Day_1_Cycle_2_Batch 3.fcs": 2.33109428626858},
-    mapper: {},
-    minVal: -0.396529312676444,
-    maxVal: 2.33109428626858
+const getGroupColor = (mapper) => {
+    const colorPool = {};
+    colorPool['0'] = '0x0000ff';
+    colorPool['1'] = '0xff00ff';
+    // set random color for each attribute; leave for future usage
+    // const groups = Object.keys(mapper);
+    // groups.forEach((it) => {
+    //      colorPool[it] = randomColorHex();
+    // })
+
+    return colorPool;
 }
 
-const getGroupMaterial = (mapper) => {
-    const materialPool = {};
-    const groups = Object.keys(mapper);
-    groups.forEach((it) => {
-        materialPool[it] = new THREE.MeshPhongMaterial({
-            color: randomColorHex(),
-        });
+const generateGredientColor = (data, nodePool, rainbow) => {
+    data.data.forEach(elem => {
+        color = rainbow.colourAt(elem.num);
+        color = `0x${color}`;
+        nodePool[elem.id].material.color.setHex(color);
     })
-
-    return materialPool;
 }
 
-const generateGredientColor = (colorNumber, material, rainbow) => {
-    color = rainbow.colourAt(colorNumber);
-    color = `#${color}`;
-    material.color = color;
+const generateCategoryColor = (data, nodePool) => {
+    const colorPool = getGroupColor(data.cat_mapper);
+    data.data.forEach(elem => {
+        nodePool[elem.id].material.color.setHex(colorPool[elem.cat]);
+    })
+    return colorPool;
 }
 
-const generateCategoryColor = (colorNumber, material, materialPool) => {
-    material = materialPool[colorNumber];
+const generateRandomColor = (nodePool) => {
+    Object.values(nodePool).forEach(val => val.material.color.setHex(randomColorHex()));
 }
+
+
+
 
 export {
     preprocess,
     prepareMaterial,
-    randomColorHex
+    randomColorHex,
+    generateGredientColor,
+    generateCategoryColor,
+    generateRandomColor
 }

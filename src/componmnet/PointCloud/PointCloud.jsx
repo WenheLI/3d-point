@@ -1,34 +1,44 @@
 import React, { Component, useEffect, useRef, useState } from 'react';
 import { main, updateCamera } from './render';
+import { generateGredientColor, generateCategoryColor, generateRandomColor } from '../../utils/index';
 import oriData from '../../../data/pca_3dumap_outputs_with_metadata.json';
 import data2D from '../../../data/pca_umap_outputs_with_metadata_Edgar.json';
+import colorData from '../../../data/processed_data.json';
 import './PointCloud.css';
 import Panel from './Panel';
 import { Button } from 'antd';
 import { CameraOutlined, PlusSquareFilled, MinusSquareFilled } from '@ant-design/icons';
+import Rainbow from 'rainbowvis.js'
 
 
 function PointCloud({ node, style, setNode }) {
-    const canvasRef = useRef(null);
-    const canvas2DRef = useRef(null);
-    const camera = useRef(null);
-    const controls = useRef(null);
-    const nodePool = useRef(null);
-    const camera2D = useRef(null);
-    const controls2D = useRef(null);
-    const nodePool2D = useRef(null);
+    const ref3D = {
+        canvasRef: useRef(null),
+        camera: useRef(null),
+        controls: useRef(null),
+        nodePool: useRef(null),
+    }
+    const ref2D = {
+        canvasRef: useRef(null),
+        camera: useRef(null),
+        controls: useRef(null),
+        nodePool: useRef(null),
+    }
     const [display, setDisplay] = useState('');
     const [display2D, setDisplay2D] = useState('');
     const [buttonLabel, setLabel] = useState('2D');
+    const [legend, setLegend] = useState([]);
+    const [legendDisplay, setLegendDisplay] = useState('');
+    let divs = [];
+    const myRainbow = new Rainbow();
+    myRainbow.setNumberRange(0, 1);
+    myRainbow.setSpectrum('#FE0002', '#0302FC');
 
-
-    const [canvas, setCanvas] = useState(canvasRef);
-
-    const renderCanvas = (ref, data, stateCam, stateControl, stateNodePool, is3D) => {
+    const renderCanvas = (ref, data, stateCam, stateControl, stateNodePool, is3D, colorRand) => {
         if (ref.current !== null) {
             const {camera: localCam, controls: localControl, nodePool: localNodePool} = 
                 main(ref.current, data, style.canvasRatio, 
-                        style.backgroundColor, setNode, is3D, true);
+                        style.backgroundColor, setNode, is3D, colorRand);
             stateCam.current = localCam;
             stateControl.current = localControl;
             stateNodePool.current = localNodePool;
@@ -36,66 +46,102 @@ function PointCloud({ node, style, setNode }) {
     }
 
     useEffect(() => {
-        renderCanvas(canvasRef, oriData, camera, controls, nodePool, true);
-        // if (canvasRef.current !== null) {
-        //     const {camera: localCam, controls: localControl, nodePool: localNodePool} = 
-        //         main(canvasRef.current, oriData, style.canvasRatio, 
-        //                 style.backgroundColor, setNode, true, true);
-        //     camera.current = localCam;
-        //     controls.current = localControl;
-        //     nodePool.current = localNodePool;
-        // }
-    }, [canvasRef]);
+        renderCanvas(ref3D.canvasRef, oriData, ref3D.camera, ref3D.controls, ref3D.nodePool, true, true);
+    }, [ref3D.canvasRef]);
 
     useEffect(() => {
-        renderCanvas(canvas2DRef, data2D, camera2D, controls2D, nodePool2D, false);
-        // if (canvas2DRef.current !== null) {
-        //     const {camera: localCam, controls: localControl, nodePool: localNodePool} = 
-        //         main(canvas2DRef.current, data2D, style.canvasRatio, 
-        //                 style.backgroundColor, setNode, false, true);
-        //     camera2D.current = localCam;
-        //     controls2D.current = localControl;
-        //     nodePool2D.current = localNodePool;
-        // }
+        renderCanvas(ref2D.canvasRef, data2D, ref2D.camera, ref2D.controls, ref2D.nodePool, false, true);
 
-    }, [canvas2DRef]);
+    }, [ref2D.canvasRef]);
 
     useEffect(() => {
-        if (node !== null && camera.current && controls.current && nodePool.current[node]) {
-            updateCamera(camera.current, controls.current, nodePool.current[node]);
+        if (node !== null && ref3D.camera.current && ref3D.controls.current && ref3D.nodePool.current[node]) {
+            updateCamera(ref3D.camera.current, ref3D.controls.current, ref3D.nodePool.current[node]);
         }
-        if (node !== null && camera2D.current && controls2D.current && nodePool2D.current[node]) {
-            updateCamera(camera2D.current, controls2D.current, nodePool2D.current[node]);
+        if (node !== null && ref2D.camera.current && ref2D.controls.current && ref2D.nodePool.current[node]) {
+            updateCamera(ref2D.camera.current, ref2D.controls.current, ref2D.nodePool.current[node]);
         }
     }, [node])
 
-    const inCavasPanel = () => {
-        return (
-            <div>
-                <div className='buttonPanel'>
-                    <div className='buttonLeftGroup'>
-                        <CameraOutlined className='downloadIcon'></CameraOutlined>
-                        <Button>Point Cloud</Button>
-                        <Button>Network</Button>
-                    </div>
-                    <div className='buttonRightgroup'>
-                        <Button>Reset</Button>
-                    </div>
-                </div>
+    const getPool = () => {
+        let pool = null;
+        if (display == '') {
+            pool = ref3D.nodePool.current;
+        } else {
+            pool = ref2D.nodePool.current;
+        }
+        return pool;
+    }
 
-                <div className='zoomPanel'>
-                    <PlusSquareFilled />
-                    <MinusSquareFilled />
+    const gradientColor = () => {
+        setLegendDisplay('none');
+        let pool = getPool();
+        generateGredientColor(colorData, pool, myRainbow);
+    }
+
+    const categoryColor = () => {
+        setLegendDisplay('');
+        let newDivs = [];
+        let pool = getPool();
+        const colorPool = generateCategoryColor(colorData, pool);
+        for (const [key, value] of Object.entries(colorData.cat_mapper)) {
+            const colorStr = colorPool[key].substr(2);
+            const r = parseInt(colorStr.substr(0, 2), 16);
+            const g = parseInt(colorStr.substr(2, 2), 16);
+            const b = parseInt(colorStr.substr(4, 2), 16);
+
+            newDivs.push(
+                <div key={value} style={{margin: 0, display: "flex", 
+                                        flexDirection: "row", justifyContent:'flex-end'}}>
+                    <div style={{backgroundColor: `rgb(${r}, ${g}, ${b})`, width: '15px', height: '15px'}}></div>
+                    <p style={{paddingLeft: '10px'}}>{value}</p>
+                </div>
+            )
+        }
+        setLegend(newDivs);
+    }
+
+    const resetColor = () => {
+        setLegendDisplay('none');
+        let pool = getPool();
+        generateRandomColor(pool);  
+    }
+
+    const inCavasPanel = () => (
+        <div>
+            <div className='buttonPanel'>
+                <div className='buttonLeftGroup'>
+                    <CameraOutlined className='downloadIcon'></CameraOutlined>
+                    <Button>Point Cloud</Button>
+                    <Button>Network</Button>
+                </div>
+                <div className='buttonRightgroup'>
+                    <Button onClick={gradientColor}>Color Gradient</Button>
+                    <Button onClick={categoryColor}>Color Group</Button>
+                    <Button onClick={resetColor}>Reset</Button>
+                    <div style={{paddingTop: '20px', display: "flex", 
+                                flexDirection: "column", alignItem: 'flex-end', display: legendDisplay}}>
+                        {legend}
+                    </div>
+                    
                 </div>
             </div>
-            )
-    }
+
+            <div className='zoomPanel'>
+                <PlusSquareFilled />
+                <MinusSquareFilled />
+            </div>
+        </div>
+    )
+    
     return (
         <div className='pointCloud'>
             <Panel display={display} setDisplay={setDisplay} setDisplay2D={setDisplay2D} 
-                buttonLabel={buttonLabel} setLabel={setLabel} width={window.innerWidth * style.widthRatio}></Panel>
+                    setLegendDisplay={setLegendDisplay} buttonLabel={buttonLabel} 
+                    setLabel={setLabel} width={window.innerWidth * style.widthRatio}>    
+            </Panel>
             <div style={{position: 'relative'}}>
-                <div ref={canvas2DRef} style={{
+                <div ref={ref2D.canvasRef} style={{
                     position: 'absolute',
                     width: window.innerWidth * style.widthRatio,
                     height: window.innerHeight * style.heightRatio,
@@ -104,7 +150,7 @@ function PointCloud({ node, style, setNode }) {
                     {inCavasPanel()}
                 </div>
 
-                <div ref={canvasRef} style={{
+                <div ref={ref3D.canvasRef} style={{
                     position: 'absolute',
                     width: window.innerWidth * style.widthRatio,
                     height: window.innerHeight * style.heightRatio,
