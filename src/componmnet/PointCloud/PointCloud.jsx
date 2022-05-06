@@ -1,17 +1,16 @@
 import React, { Component, useEffect, useRef, useState } from 'react';
-import { main, updateCamera } from './render';
 import { generateGredientColor, generateCategoryColor, generateRandomColor } from '../../utils/index';
+import { main, updateCamera, restoreHighlight, highlightNode } from './render';
 import oriData from '../../../data/pca_3dumap_outputs_with_metadata.json';
 import data2D from '../../../data/pca_umap_outputs_with_metadata_Edgar.json';
 import colorData from '../../../data/processed_data.json';
 import './PointCloud.css';
 import Panel from './Panel';
-import { Button } from 'antd';
 import { CameraOutlined, PlusSquareFilled, MinusSquareFilled } from '@ant-design/icons';
 import Rainbow from 'rainbowvis.js'
+import { Button } from 'antd';
 
-
-function PointCloud({ node, style, setNode }) {
+function PointCloud({ node, style, setNode, regionSelectNodes, setUI }) {
     const ref3D = {
         canvasRef: useRef(null),
         camera: useRef(null),
@@ -24,12 +23,13 @@ function PointCloud({ node, style, setNode }) {
         controls: useRef(null),
         nodePool: useRef(null),
     }
-    const [display, setDisplay] = useState('');
-    const [display2D, setDisplay2D] = useState('');
-    const [buttonLabel, setLabel] = useState('2D');
+
     const [legend, setLegend] = useState([]);
-    const [legendDisplay, setLegendDisplay] = useState('');
-    let divs = [];
+    const [legendDisplay, setLegendDisplay] = useState(true);
+
+    const [is3D, setIs3D] = useState(true);
+    const [prevHighlight, setPrevHighlight] = useState(new Set());
+
     const myRainbow = new Rainbow();
     myRainbow.setNumberRange(0, 1);
     myRainbow.setSpectrum('#FE0002', '#0302FC');
@@ -61,28 +61,32 @@ function PointCloud({ node, style, setNode }) {
         if (node !== null && ref2D.camera.current && ref2D.controls.current && ref2D.nodePool.current[node]) {
             updateCamera(ref2D.camera.current, ref2D.controls.current, ref2D.nodePool.current[node]);
         }
-    }, [node])
+    }, [node]);
 
-    const getPool = () => {
-        let pool = null;
-        if (display == '') {
-            pool = ref3D.nodePool.current;
-        } else {
-            pool = ref2D.nodePool.current;
+    useEffect(() => {
+        const currPool = is3D ? ref3D.nodePool.current : ref2D.nodePool.current;
+        for (let node of prevHighlight) {
+            restoreHighlight(currPool[node]);
         }
-        return pool;
-    }
+
+        setPrevHighlight(new Set(regionSelectNodes));
+                    
+        for (let hightNode of regionSelectNodes) {
+            highlightNode(currPool[hightNode]);
+        }
+
+    }, [regionSelectNodes]);
 
     const gradientColor = () => {
-        setLegendDisplay('none');
-        let pool = getPool();
+        setLegendDisplay(false);
+        const pool = is3D ? ref3D.nodePool.current : ref2D.nodePool.current;
         generateGredientColor(colorData, pool, myRainbow);
     }
 
     const categoryColor = () => {
-        setLegendDisplay('');
-        let newDivs = [];
-        let pool = getPool();
+        setLegendDisplay(true);
+        const newDivs = [];
+        const pool = is3D ? ref3D.nodePool.current : ref2D.nodePool.current;
         const colorPool = generateCategoryColor(colorData, pool);
         for (const [key, value] of Object.entries(colorData.cat_mapper)) {
             const colorStr = colorPool[key].substr(2);
@@ -96,31 +100,32 @@ function PointCloud({ node, style, setNode }) {
                     <div style={{backgroundColor: `rgb(${r}, ${g}, ${b})`, width: '15px', height: '15px'}}></div>
                     <p style={{paddingLeft: '10px'}}>{value}</p>
                 </div>
-            )
+            );
         }
         setLegend(newDivs);
     }
 
     const resetColor = () => {
-        setLegendDisplay('none');
-        let pool = getPool();
+        setLegendDisplay(false);
+        const pool = is3D ? ref3D.nodePool.current : ref2D.nodePool.current;
         generateRandomColor(pool);  
     }
 
-    const inCavasPanel = () => (
+    const inCavasPanel = (setUI) => (
         <div>
             <div className='buttonPanel'>
                 <div className='buttonLeftGroup'>
                     <CameraOutlined className='downloadIcon'></CameraOutlined>
-                    <Button>Point Cloud</Button>
-                    <Button>Network</Button>
+                    <Button onClick={() => setUI(0)}>Point Cloud</Button>
+                    <Button onClick={() => setUI(1)}>Network</Button>
                 </div>
                 <div className='buttonRightgroup'>
                     <Button onClick={gradientColor}>Color Gradient</Button>
                     <Button onClick={categoryColor}>Color Group</Button>
                     <Button onClick={resetColor}>Reset</Button>
                     <div style={{paddingTop: '20px', display: "flex", 
-                                flexDirection: "column", alignItem: 'flex-end', display: legendDisplay}}>
+                                flexDirection: "column", alignItem: 'flex-end', 
+                                display: legendDisplay ? '' : 'none'}}>
                         {legend}
                     </div>
                     
@@ -133,31 +138,53 @@ function PointCloud({ node, style, setNode }) {
             </div>
         </div>
     )
-    
+
     return (
         <div className='pointCloud'>
-            <Panel display={display} setDisplay={setDisplay} setDisplay2D={setDisplay2D} 
-                    setLegendDisplay={setLegendDisplay} buttonLabel={buttonLabel} 
-                    setLabel={setLabel} width={window.innerWidth * style.widthRatio}>    
+            <Panel  is3D={is3D} setIs3D={setIs3D}
+                    setLegendDisplay={setLegendDisplay} 
+                    width={window.innerWidth * style.widthRatio}>    
             </Panel>
             <div style={{position: 'relative'}}>
-                <div ref={ref2D.canvasRef} style={{
+                {/* the map way is working but it did not seem to shorten the code and added confusion */}
+                {
+                    [ref2D, ref3D].map(it => {
+                        let key = 0;
+                        let display = '';
+                        if (it === ref2D) {
+                            display = is3D ? 'none' : 'block';
+                        } else {
+                            display = is3D ? 'block' : 'none';
+                            key = 1;
+                        }
+                        return (
+                            <div key={key} ref={it.canvasRef} style={{
+                                position: 'absolute',
+                                width: window.innerWidth * style.widthRatio,
+                                height: window.innerHeight * style.heightRatio,
+                                display: display,
+                            }}>
+                                {inCavasPanel(setUI)}
+                            </div>
+                        )
+                    })
+                } 
+                {/* <div ref={ref2D.canvasRef} style={{
                     position: 'absolute',
                     width: window.innerWidth * style.widthRatio,
                     height: window.innerHeight * style.heightRatio,
-                    display: display2D,
+                    display: is3D ? 'none' : 'block',
                 }}>
-                    {inCavasPanel()}
+                    {inCavasPanel(setUI)}
                 </div>
 
                 <div ref={ref3D.canvasRef} style={{
-                    position: 'absolute',
                     width: window.innerWidth * style.widthRatio,
                     height: window.innerHeight * style.heightRatio,
-                    display: display,
+                    display: is3D ? 'block' : 'none',
                 }}>
-                    {inCavasPanel()}
-                </div>
+                    {inCavasPanel(setUI)}
+                </div> */}
             </div>
             
         </div>

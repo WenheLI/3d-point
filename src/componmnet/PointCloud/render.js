@@ -1,3 +1,4 @@
+// TODO: The whole file should be refactored into a render manager class
 import * as THREE from "three";
 import { randomColorHex } from "../../utils";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -6,10 +7,11 @@ import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import SelectionHelper from './SelectionHelper';
 import Rainbow from 'rainbowvis.js'
 
+import { BrightYellow } from '../../utils/constants';
+
 const updateCamera = (camera, controls, nodeMesh) => {
     let {x, y, z} = nodeMesh.position;
-    x = parseInt(x);
-    y = parseInt(y);
+
     camera.position.set(x, y, z - 1.5);
     const nodePos = new THREE.Vector3(x, y, z);
     camera.lookAt(nodePos);
@@ -17,11 +19,23 @@ const updateCamera = (camera, controls, nodeMesh) => {
     controls.update();
 }
 
+const restoreHighlight = (nodeMesh) => {
+    nodeMesh.material.color.setHex(nodeMesh.userData.color);
+    nodeMesh.material.wireframe = false;
+}
+
+const highlightNode = (nodeMesh) => {
+    if (nodeMesh.material.wireframe) return ;
+    nodeMesh.userData.color = nodeMesh.material.color.getHex();
+    nodeMesh.material.color.setHex(BrightYellow);
+    nodeMesh.material.wireframe = true;
+}
+
 const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, colorRand) => {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(backgroundColor);
     const color = 0xffffff;
-    const intensity = 2;
+    const intensity = 1.2;
 
     const ambientLight = new THREE.AmbientLight(color, intensity);
 
@@ -49,7 +63,6 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, colorRand) =
     myRainbow.setNumberRange(0, 1);
     myRainbow.setSpectrum('#FE0002', '#0302FC');
 
-
     for (let i = 0; i < data.length; i++) {
         let color = null;
         if (colorRand) {
@@ -65,15 +78,13 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, colorRand) =
         nodePool[data[i].id].position.x = data[i].umap1;
         nodePool[data[i].id].position.y = data[i].umap2;
  
-        nodePool[data[i].id].position.z = is3d ? data[i].umap3 : 0.5;
+        nodePool[data[i].id].position.z = data[i].umap3 ? data[i].umap3 : 0.5;
         nodePool[data[i].id].userData = {
             'label': data[i].id,
         }
         scene.add(nodePool[data[i].id]);
     }
 
-
-    
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
     if (!is3d) {
@@ -197,5 +208,7 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, colorRand) =
 
 export {
     main,
+    highlightNode,
+    restoreHighlight,
     updateCamera
 }

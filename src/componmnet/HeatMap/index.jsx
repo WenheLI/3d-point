@@ -5,8 +5,9 @@ import Panel from './Panel';
 import 'antd/dist/antd.css';
 import { CameraOutlined } from '@ant-design/icons'
 import './index.css'
+import { BrightYellowString } from '../../utils/constants';
 
-function HeatMap({setNode, style, selectedNode}) {
+function HeatMap({setNode, style, selectedNode, setRegionSelectNodes, regionSelectNodes}) {
     const containerRef = useRef(null);
     const [cg, setCg] = useState(null);
 
@@ -20,13 +21,20 @@ function HeatMap({setNode, style, selectedNode}) {
                 'hide': true,
                 'onclick': function(row, col) {
                     setNode(col);
+                    setRegionSelectNodes((prev) => {
+                        if (prev.has(col)) {
+                            prev.delete(col);
+                        } else {
+                            prev.add(col);
+                        }
+                        return new Set(prev);
+                    });
                 }
             }
             const cg = new cgl(args);
             setCg(cg)
-
         }
-          
+
     }, [containerRef]);
 
     useEffect(() => {
@@ -34,6 +42,12 @@ function HeatMap({setNode, style, selectedNode}) {
             cg.utils.highlight(selectedNode);
         }
     }, [selectedNode]);
+
+    useEffect(() => {
+        if (cg !== null) {
+            cg.utils.highlight(Array.from(regionSelectNodes), BrightYellowString);
+        }
+    }, [regionSelectNodes]);
 
     const handleDownload = () => {
         if (!cg) return;
