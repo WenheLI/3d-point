@@ -73912,8 +73912,9 @@ function clustergrammer_gl(args, external_model=null){
     cgm.args = args;
 
     cgm.utils = {
-      'highlight': (rows) => {
+      'highlight': (rows, color='red') => {
         cgm.params.search.searched_rows = rows;
+        cgm.params.search.color = color;
         draw_webgl_layers(cgm)
       }
     }
@@ -74963,6 +74964,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
   // let color_arr = color_arr_ini
 
   let searched_rows = params.search.searched_rows
+  let defined_color = params.search.color ? params.search.color : 'red'
 
   let searchSpace = undefined;
   if (inst_axis === 'row'){
@@ -74975,7 +74977,7 @@ module.exports = function make_viz_aid_tri_args(regl, params, inst_axis){
     let inst_name = searchSpace[i]
     x = inst_rgba;
     if (searched_rows.includes(inst_name)){
-      x = color_to_rgba('red', 1.0)
+      x = color_to_rgba(defined_color, 1.0)
     }
     return x
   });

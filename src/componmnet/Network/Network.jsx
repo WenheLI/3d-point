@@ -46,9 +46,6 @@ function Network({ layout }) {
     
     return (
         <div ref={canvasRef} style={{
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
         }}></div>
     )
 }

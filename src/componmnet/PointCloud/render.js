@@ -1,9 +1,12 @@
+// TODO: The whole file should be refactored into a render manager class
 import * as THREE from "three";
 import { randomColorHex } from "../../utils";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import { SelectionBox } from 'three/examples/jsm/interactive/SelectionBox';
 import SelectionHelper from './SelectionHelper';
+
+import { BrightYellow } from '../../utils/constants';
 
 const updateCamera = (camera, controls, nodeMesh) => {
     let {x, y, z} = nodeMesh.position;
@@ -16,10 +19,14 @@ const updateCamera = (camera, controls, nodeMesh) => {
 }
 
 const restoreHighlight = (nodeMesh) => {
+    nodeMesh.material.color.setHex(nodeMesh.userData.color);
     nodeMesh.material.wireframe = false;
 }
 
 const highlightNode = (nodeMesh) => {
+    if (nodeMesh.material.wireframe) return ;
+    nodeMesh.userData.color = nodeMesh.material.color.getHex();
+    nodeMesh.material.color.setHex(BrightYellow);
     nodeMesh.material.wireframe = true;
 }
 
@@ -57,8 +64,6 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, hasDensity) 
     myRainbow.setNumberRange(0, 1);
     //myRainbow.setSpectrum('#DC1C13', '#F6BDC0');
     myRainbow.setSpectrum('#FE0002', '#0302FC');
-    
-
 
     for (let i = 0; i < data.length; i++) {
         let color = null;
@@ -76,15 +81,13 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, hasDensity) 
         nodePool[data[i].id].position.x = data[i].umap1;
         nodePool[data[i].id].position.y = data[i].umap2;
  
-        nodePool[data[i].id].position.z = is3d ? data[i].umap3 : 0.5;
+        nodePool[data[i].id].position.z = data[i].umap3 ? data[i].umap3 : 0.5;
         nodePool[data[i].id].userData = {
             'label': data[i].id,
         }
         scene.add(nodePool[data[i].id]);
     }
 
-
-    
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = false;
     if (!is3d) {

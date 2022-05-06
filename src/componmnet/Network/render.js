@@ -29,7 +29,7 @@ const main = (canvas, data, graph) => {
     graph.kamadaKawai3DLayout(200, .9, 12);
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x111f0f);
+    scene.background = new THREE.Color(0xffffff);
     const color = 0xffffff;
     const intensity = 2;
 
@@ -75,7 +75,7 @@ const main = (canvas, data, graph) => {
     }
     const dragControl = new DragControls(Object.values(spherePool), camera, renderer.domElement);
 
-    const lineMaterial = new THREE.LineBasicMaterial( { color: 0xffffff } );
+    const lineMaterial = new THREE.LineBasicMaterial( { color: 0x000000 } );
 
     // drawLines
     for (const link of data.links) {
