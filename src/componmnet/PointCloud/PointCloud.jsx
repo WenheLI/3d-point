@@ -126,6 +126,7 @@ function PointCloud({ node, style, setNode, regionSelectNodes, setUI }) {
                     <div style={{paddingTop: '20px', display: "flex", 
                                 flexDirection: "column", alignItem: 'flex-end', 
                                 display: legendDisplay ? '' : 'none'}}>
+                        {/* todo: code legend into a component  */}
                         {legend}
                     </div>
                     
@@ -146,19 +147,16 @@ function PointCloud({ node, style, setNode, regionSelectNodes, setUI }) {
                     width={window.innerWidth * style.widthRatio}>    
             </Panel>
             <div style={{position: 'relative'}}>
-                {/* the map way is working but it did not seem to shorten the code and added confusion */}
                 {
-                    [ref2D, ref3D].map(it => {
-                        let key = 0;
+                    [ref2D, ref3D].map((it, idx) => {
                         let display = '';
-                        if (it === ref2D) {
+                        if (idx === 0) {
                             display = is3D ? 'none' : 'block';
                         } else {
                             display = is3D ? 'block' : 'none';
-                            key = 1;
                         }
                         return (
-                            <div key={key} ref={it.canvasRef} style={{
+                            <div key={idx} ref={it.canvasRef} style={{
                                 position: 'absolute',
                                 width: window.innerWidth * style.widthRatio,
                                 height: window.innerHeight * style.heightRatio,
@@ -169,24 +167,7 @@ function PointCloud({ node, style, setNode, regionSelectNodes, setUI }) {
                         )
                     })
                 } 
-                {/* <div ref={ref2D.canvasRef} style={{
-                    position: 'absolute',
-                    width: window.innerWidth * style.widthRatio,
-                    height: window.innerHeight * style.heightRatio,
-                    display: is3D ? 'none' : 'block',
-                }}>
-                    {inCavasPanel(setUI)}
-                </div>
-
-                <div ref={ref3D.canvasRef} style={{
-                    width: window.innerWidth * style.widthRatio,
-                    height: window.innerHeight * style.heightRatio,
-                    display: is3D ? 'block' : 'none',
-                }}>
-                    {inCavasPanel(setUI)}
-                </div> */}
-            </div>
-            
+            </div>  
         </div>
     )
 }

@@ -81,9 +81,6 @@ const generateRandomColor = (nodePool) => {
     Object.values(nodePool).forEach(val => val.material.color.setHex(randomColorHex()));
 }
 
-
-
-
 export {
     preprocess,
     prepareMaterial,

@@ -10,7 +10,7 @@ import Rainbow from 'rainbowvis.js'
 import { BrightYellow } from '../../utils/constants';
 
 const updateCamera = (camera, controls, nodeMesh) => {
-    let {x, y, z} = nodeMesh.position;
+    const {x, y, z} = nodeMesh.position;
 
     camera.position.set(x, y, z - 1.5);
     const nodePos = new THREE.Vector3(x, y, z);
