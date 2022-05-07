@@ -13,6 +13,7 @@
     "antd": "^4.20.0-alpha.1",
     "clustergrammer-gl": "^0.23.0",
     "igraph-wasm": "^0.0.3",
+    "rainbowvis.js": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "three": "^0.138.3"

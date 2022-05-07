@@ -3,14 +3,18 @@ import './Panel.css';
 import { DownOutlined } from '@ant-design/icons';
 import { Menu, Dropdown, Button, AutoComplete, Slider, Input} from 'antd';
 
-function Panel({scene}) {
+function Panel({display, is3D, setIs3D, setLegendDisplay, width}) {
 
     return (
-        <div className='panel panel-3d'>
+        <div className='panel panel-3d'  style={{width: width}}>
             <div className='panel-head-3d'>
-                <h1>Netowrk</h1>
+                <h1>Network</h1>
 
-                <a>Switch to {scene === 0  ? '2D' : '3D' }</a>
+                <a onClick={() => {
+                    setLegendDisplay(false);
+                    setIs3D((prev) => !prev);
+                }}> 
+                Switch to {!is3D ? '3D' : '2D'}</a>
             </div>
             <div className='panel-body-3d'>
                 <div className='slider-panel'>
