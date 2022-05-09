@@ -47,11 +47,12 @@ function PointCloud({ node, style, setNode, regionSelectNodes, setUI }) {
 
     useEffect(() => {
         renderCanvas(ref3D.canvasRef, oriData, ref3D.camera, ref3D.controls, ref3D.nodePool, true, true);
+        categoryColor();
     }, [ref3D.canvasRef]);
 
     useEffect(() => {
         renderCanvas(ref2D.canvasRef, data2D, ref2D.camera, ref2D.controls, ref2D.nodePool, false, true);
-
+        categoryColor();
     }, [ref2D.canvasRef]);
 
     useEffect(() => {

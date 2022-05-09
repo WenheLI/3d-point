@@ -63,17 +63,17 @@ const getGroupColor = (mapper) => {
 
 const generateGredientColor = (data, nodePool, rainbow) => {
     data.data.forEach(elem => {
-        color = rainbow.colourAt(elem.num);
+        let color = rainbow.colourAt(elem.num);
         color = `0x${color}`;
         nodePool[elem.id].material.color.setHex(color);
-    })
+    });
 }
 
 const generateCategoryColor = (data, nodePool) => {
     const colorPool = getGroupColor(data.cat_mapper);
     data.data.forEach(elem => {
         nodePool[elem.id].material.color.setHex(colorPool[elem.cat]);
-    })
+    });
     return colorPool;
 }
 
