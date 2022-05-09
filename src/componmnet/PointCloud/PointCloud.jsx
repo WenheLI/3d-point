@@ -149,19 +149,20 @@ function PointCloud({ node, style, setNode, regionSelectNodes, setUI }) {
             </Panel>
             <div style={{position: 'relative'}}>
                 {
+                    // Hide for now this should be managed by render manager
                     [ref2D, ref3D].map((it, idx) => {
-                        let display = '';
+                        let visibility = '';
                         if (idx === 0) {
-                            display = is3D ? 'none' : 'block';
+                            visibility = is3D ? 'hidden' : 'visible';
                         } else {
-                            display = is3D ? 'block' : 'none';
+                            visibility = is3D ? 'visible' : 'hidden';
                         }
                         return (
                             <div key={idx} ref={it.canvasRef} style={{
                                 position: 'absolute',
                                 width: window.innerWidth * style.widthRatio,
                                 height: window.innerHeight * style.heightRatio,
-                                display: display,
+                                visibility,
                             }}>
                                 {inCavasPanel(setUI)}
                             </div>

@@ -108,7 +108,6 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, colorRand) =
         mouse.y = - (y / boundingRect.height) * 2 + 1;
         mouse.z = 0;
         raycaster.setFromCamera(mouse, camera);
-
         mouseX = event.clientX;
         mouseY = event.clientY;
     }
@@ -119,13 +118,13 @@ const main = (canvas, data, ratio, backgroundColor, setNodes, is3d, colorRand) =
         const intersects = raycaster.intersectObjects( scene.children );
         let hovEvent = undefined;
         let curLabel;
-
         if (intersects.length > 0) {
+            
             curLabel = intersects[0].object.userData['label'];
             if (curLabel !== lastLabel) {
                 hovEvent = new CustomEvent('clientHovIn', {
                     detail: {x: mouseX, y: mouseY, label: curLabel}
-                }); 
+                });
             }
         } else {
             curLabel = '';
