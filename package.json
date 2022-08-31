@@ -5,7 +5,8 @@
   "scripts": {
     "start": "parcel ./public/index.html",
     "build": "parcel build ./public/index.html",
-    "lint": "eslint ./src --ext .js,.jsx -c ./.eslintrc.js"
+    "lint": "eslint ./src --ext .js,.jsx -c ./.eslintrc.js",
+    "prepare": "husky install"
   },
   "author": "",
   "license": "ISC",
